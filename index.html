@@ -265,7 +265,7 @@
             overflow: hidden;
         }
 
-        /* Interactive Process Flow Banner */
+        /* Process Flow Banner */
         .process-flow {
             display: flex;
             justify-content: space-between;
@@ -387,7 +387,7 @@
             max-height: 250px;
             border-radius: var(--radius-sm);
             display: none;
-            margin-top: 15px;
+            margin: 15px auto 0 auto;
             object-fit: cover;
         }
 
@@ -460,7 +460,6 @@
             border-radius: var(--radius-sm);
             padding: 16px;
             border: 1px solid var(--border-color);
-            cursor: pointer;
             transition: var(--transition);
         }
         .val-card:hover, .val-card.selected {
@@ -531,10 +530,9 @@
         /* Dashboards & Grid Systems */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 
         @media (max-width: 992px) {
-            .hero, .scanner-container, .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .hero, .scanner-container, .grid-2, .grid-3 { grid-template-columns: 1fr; }
             nav ul { display: none; }
         }
 
@@ -606,6 +604,9 @@
             align-items: center;
             justify-content: center;
         }
+        .modal.active {
+            display: flex;
+        }
         .modal-content {
             background: white;
             padding: 32px;
@@ -656,7 +657,6 @@
             margin-bottom: 10px;
         }
 
-        /* Section Titles */
         .section-header {
             margin-bottom: 32px;
         }
@@ -669,7 +669,6 @@
             font-size: 1rem;
         }
 
-        /* Form Controls */
         .form-group {
             margin-bottom: 16px;
         }
@@ -781,7 +780,6 @@
             </div>
         </div>
 
-        <!-- Quick Platform Statistics -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number">1,250+ <span style="font-size: 1.2rem; font-weight: 500;" data-i18n="unit-kg">كجم</span></div>
@@ -805,7 +803,6 @@
             </div>
         </div>
 
-        <!-- Animated Journey Bar -->
         <div class="process-flow">
             <div class="flow-step">
                 <div class="flow-icon"><i class="fa-solid fa-seedling"></i></div>
@@ -847,7 +844,6 @@
         </div>
 
         <div class="scanner-container">
-            <!-- Left Upload Panel -->
             <div class="scanner-card">
                 <h3 style="margin-bottom: 16px; color: var(--primary-dark);"><i class="fa-solid fa-camera-retro"></i> <span data-i18n="upload-heading">تحميل عينة المخلفات</span></h3>
 
@@ -865,7 +861,7 @@
 
                 <div class="scan-anim-box" id="scan-box">
                     <div class="scan-line"></div>
-                    <img id="preview-img" class="preview-img" src="" alt="معاينة العينة" style="display:block;">
+                    <img id="preview-img" class="preview-img" src="" alt="معاينة العينة">
                 </div>
 
                 <div style="margin-top: 20px; display: flex; gap: 10px;">
@@ -874,7 +870,6 @@
                 </div>
             </div>
 
-            <!-- Right Results Panel -->
             <div class="scanner-card" style="padding:0; background: transparent; border:none; box-shadow:none;">
                 <div id="results-placeholder" class="card" style="text-align: center; padding: 60px;">
                     <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 3rem; color: var(--sage); margin-bottom: 16px;"></i>
@@ -900,21 +895,15 @@
                             <i class="fa-solid fa-lightbulb" style="color: var(--sage);"></i> <span data-i18n="res-apps-title">التطبيقات والمنتجات المحتملة</span>
                         </h4>
 
-                        <div class="valorization-grid" id="valorization-grid">
-                            <!-- Populated dynamically by JS -->
-                        </div>
+                        <div class="valorization-grid" id="valorization-grid"></div>
 
-                        <!-- Processing Pathway -->
                         <div style="margin-top: 24px;">
                             <h5 id="pathway-title" style="margin-bottom: 12px; color: var(--primary-dark);">مسار الاستخلاص والتصنيع المقترح</h5>
-                            <div class="pathway-stepper" id="pathway">
-                                <!-- Populated dynamically -->
-                            </div>
+                            <div class="pathway-stepper" id="pathway"></div>
                         </div>
 
                         <div style="margin-top:14px;font-size:.8rem;color:var(--text-muted);"><strong data-i18n="res-alt-mat">بدائل أخرى محتملة:</strong> <span id="ai-alternatives">—</span></div>
 
-                        <!-- Safety Disclaimer Callout -->
                         <div class="safety-box">
                             <i class="fa-solid fa-shield-halved"></i>
                             <div style="font-size: 0.8rem; color: #664D03;" data-i18n="safety-notice">
@@ -962,7 +951,6 @@
             </div>
         </div>
 
-        <!-- Traceability Batch Log -->
         <div class="card" style="margin-top: 32px;">
             <h4 style="margin-bottom: 16px; color: var(--primary-dark);"><i class="fa-solid fa-diagram-project"></i> <span data-i18n="batch-log-title">سجل التتبع الرقمي للشحنات المسجلة</span></h4>
             <div style="overflow-x: auto;">
@@ -976,7 +964,9 @@
                             <th style="padding: 12px;" data-i18n="th-status">الحالة</th>
                         </tr>
                     </thead>
-                    <tbody id="batch-table-body"><tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted);" data-i18n="no-batches">لم يتم تسجيل أي شحنة إيداع حتى الآن. سيتحدث السجل عند قيامك بأول عملية.</td></tr></tbody>
+                    <tbody id="batch-table-body">
+                        <tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted);" data-i18n="no-batches">لم يتم تسجيل أي شحنة إيداع حتى الآن. سيتحدث السجل عند قيامك بأول عملية.</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -1029,7 +1019,6 @@
             <p data-i18n="rew-sub">استبدل نقاط استدامة RePhyto بمنتجات واعدة تم تطويرها واختبارها داخل معامل جامعة ميريت.</p>
         </div>
 
-        <!-- Student Points Header Widget -->
         <div class="card" style="background: linear-gradient(135deg, var(--primary-dark), var(--accent-green)); color: white; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <span style="font-size: 0.85rem; opacity: 0.8;"><span data-i18n="rew-user-label">تسجيل الدخول الحالي:</span> <strong id="logged-user-label">غير مسجل</strong></span>
@@ -1127,7 +1116,6 @@
         </div>
 
         <div class="grid-2">
-            <!-- المدخلات -->
             <div class="card">
                 <h4 style="margin-bottom: 16px; color: var(--primary-dark);"><i class="fa-solid fa-calculator"></i> <span data-i18n="biz-inputs-title">مدخلات مشروع التثمين والاستخلاص</span></h4>
                 
@@ -1162,7 +1150,6 @@
                 </div>
             </div>
 
-            <!-- المخرجات الحسابية والنتائج -->
             <div class="card" style="background: var(--primary-dark); color: white;">
                 <h4 style="margin-bottom: 16px; color: var(--sage);"><i class="fa-solid fa-chart-gantt"></i> <span data-i18n="biz-outputs-title">مؤشرات الجدوى والأثر المالي الواقعي</span></h4>
                 <div style="display:flex; flex-direction:column; gap: 14px; margin-top: 15px;">
@@ -1247,8 +1234,6 @@
     </footer>
 
     <!-- MODALS -->
-
-    <!-- Student Auth Modal with Real Account System -->
     <div class="modal" id="auth-modal">
         <div class="modal-content">
             <div class="auth-tabs">
@@ -1332,11 +1317,12 @@
         </div>
     </div>
 
-    <!-- REPHYTO CORE SCRIPT ENGINE & I18N -->
+    <!-- REPHYTO SCRIPT ENGINE -->
     <script>
-        const STORAGE_KEY = 'rephyto_system_v5_egp';
         const API_KEY_STORAGE_KEY = 'rephyto_api_key';
         let currentLang = localStorage.getItem('rephyto_lang') || 'ar';
+        let currentUser = JSON.parse(localStorage.getItem('rephyto_user')) || null;
+        let batches = JSON.parse(localStorage.getItem('rephyto_batches')) || [];
         let currentClassification = null;
 
         function getApiKey() {
@@ -1346,13 +1332,6 @@
         function saveApiKey(key) {
             localStorage.setItem(API_KEY_STORAGE_KEY, key.trim());
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const apiKeyInput = document.getElementById('api-key-input');
-            if (apiKeyInput) {
-                apiKeyInput.value = getApiKey();
-            }
-        });
 
         const i18n = {
             ar: {
@@ -1440,7 +1419,7 @@
                 "lab-card-3-desc": "تركيب المقشرات الطبيعية والصابون العلاجي والمستخلصات الجلدية.",
                 "lab-card-3-routes": "نماذج الصابون والمنتجات العشبية",
                 "rew-title": "حول مساهمتك إلى مكافآت حقيقية",
-                "rew-sub": "استبدل نقاط استدامة RePhyto بمنتجات واعدة تم تطويرها وااختبارها داخل معامل جامعة ميريت.",
+                "rew-sub": "استبدل نقاط استدامة RePhyto بمنتجات واعدة تم تطويرها واختبارها داخل معامل جامعة ميريت.",
                 "rew-user-label": "تسجيل الدخول الحالي:",
                 "rew-balance-label": "رصيد النقاط:",
                 "btn-view-cert": "عرض شهادة الاستدامة",
@@ -1671,6 +1650,45 @@
             }
         };
 
+        const MOCK_DATA = [
+            {
+                name: "مخلفات زهور الكركديه (Hibiscus)",
+                part: "الأسدية والأوراق الزهرية الجافة",
+                conf: "98%",
+                apps: [
+                    { title: "مستخلص الكركديه الفينولي", badge: "high", desc: "غني بالأنثوسيانين والمركبات المضادة للأكسدة" },
+                    { title: "صبغة طبيعية للغزل والمستحضرات", badge: "high", desc: "صبغات أنثوسيانين حمراء عالية الجودة" },
+                    { title: "صابون نباتي علاجي", badge: "medium", desc: "إضافة بعد التأكد من معايير النقاء المعملي" }
+                ],
+                steps: [
+                    "التجمع والترشيح التجفيفي تحت درجات حرارة منخفضة.",
+                    "الاستخلاص المائي/الكحولي المعزز بالسلسلة الصيدلانية.",
+                    "الفصل والتغليف كمستخلص خام طبيعي صيدلاني."
+                ],
+                alts: "الكركدية البري، العناب، الورد البلدي"
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const apiKeyInput = document.getElementById('api-key-input');
+            if (apiKeyInput) apiKeyInput.value = getApiKey();
+            updateUI();
+            renderBatches();
+            calculateBiz();
+        });
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            
+            const targetSection = document.getElementById(pageId);
+            if(targetSection) targetSection.classList.add('active');
+
+            const activeLink = document.querySelector(`.nav-link[onclick*="${pageId}"]`);
+            if(activeLink) activeLink.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             localStorage.setItem('rephyto_lang', currentLang);
@@ -1690,30 +1708,247 @@
             });
 
             updateUI();
-            if (typeof calculateBiz === 'function') calculateBiz();
+            calculateBiz();
             if (currentClassification) renderClassification(currentClassification);
         }
 
-        const WASTE_POINTS = {
-            'hibiscus flower waste': 15, 'tea leaf waste': 10, 'bay leaf waste': 10,
-            'curry leaf waste': 10, 'mint leaf waste': 10, 'citrus peel waste': 15,
-            'plant stem waste': 10, 'dry leaves': 5, 'plant root waste': 15,
-            'unknown laboratory waste': 0
-        };
+        function triggerFileInput() {
+            document.getElementById('file-input').click();
+        }
 
-        const ROUTES = {
-            'hibiscus flower waste': [
-                ['مستخلص الكركديه الفينولي', 'Phenolic Hibiscus Extract', 'إمكانية عالية', 'High Potential', 'غني بالأنثوسيانين والمركبات المضادة للأكسدة', 'Rich in anthocyanins & natural antioxidants'],
-                ['صبغة طبيعية للغزل والمستحضرات', 'Natural Dye for Textiles/Cosmetics', 'إمكانية عالية', 'High Potential', 'صبغات أنثوسيانين حمراء عالية الجودة', 'High-quality red anthocyanin pigments'],
-                ['صابون نباتي علاجـي', 'Therapeutic Botanical Soap', 'إمكانية متوسطة', 'Medium Potential', 'إضافة بعد التأكد من معايير النقاء', 'Added after verifying purity standards'],
-                ['سماد عضوي ومحسن تربة', 'Organic Fertilizer & Soil Conditioner', 'إمكانية متوسطة', 'Medium Potential', 'للمتبقيات غير الملوثة كيميائياً', 'For chemically uncontaminated residues']
-            ],
-            'tea leaf waste': [
-                ['مستخلص الفينولات والشاي', 'Tea Polyphenol Extract', 'إمكانية عالية', 'High Potential', 'كاتيكين ومضادات أكسدة للتركيبات', 'Catechins & antioxidants for formulations'],
-                ['مقشر طبيعي للبشرة', 'Natural Skin Scrub', 'إمكانية متوسطة', 'Medium Potential', 'مادة نباتية دقيقة صلبة بعد التجفيف', 'Fine botanical abrasive after drying'],
-                ['مغذيات عضوية للتربة', 'Organic Soil Nutrients', 'إمكانية متوسطة', 'Medium Potential', '']
-            ]
-        };
+        function handleFile(files) {
+            if (files && files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.getElementById('preview-img');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    document.getElementById('scan-box').style.display = 'block';
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        }
+
+        function processAIScan() {
+            const img = document.getElementById('preview-img');
+            if (!img.src || img.style.display === 'none') {
+                alert(currentLang === 'ar' ? 'يرجى تحميل صورة أولاً!' : 'Please upload an image first!');
+                return;
+            }
+
+            document.getElementById('scan-box').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('results-placeholder').style.display = 'none';
+                const resPanel = document.getElementById('results-panel');
+                resPanel.classList.add('active');
+                
+                const sample = MOCK_DATA[0];
+                currentClassification = sample;
+                renderClassification(sample);
+            }, 1200);
+        }
+
+        function renderClassification(sample) {
+            document.getElementById('res-material').innerText = sample.name;
+            document.getElementById('res-conf').innerText = sample.conf;
+            document.getElementById('res-part').innerText = sample.part;
+            
+            const grid = document.getElementById('valorization-grid');
+            grid.innerHTML = sample.apps.map(app => `
+                <div class="val-card">
+                    <span class="val-badge ${app.badge}">${app.badge.toUpperCase()}</span>
+                    <h5 style="color:var(--primary-dark); font-size:0.95rem;">${app.title}</h5>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">${app.desc}</p>
+                </div>
+            `).join('');
+
+            const pathway = document.getElementById('pathway');
+            pathway.innerHTML = sample.steps.map((step, idx) => `
+                <div class="pathway-step">
+                    <div class="step-num">${idx + 1}</div>
+                    <div style="font-size:0.85rem; color:var(--text-dark);">${step}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('ai-alternatives').innerText = sample.alts;
+        }
+
+        function resetScanner() {
+            document.getElementById('preview-img').style.display = 'none';
+            document.getElementById('preview-img').src = '';
+            document.getElementById('scan-box').style.display = 'none';
+            document.getElementById('results-panel').classList.remove('active');
+            document.getElementById('results-placeholder').style.display = 'block';
+            currentClassification = null;
+        }
+
+        function logCollection() {
+            if (!currentUser) {
+                alert(currentLang === 'ar' ? 'يرجى تسجيل الدخول أولاً لتسجيل الإيداع!' : 'Please login to log a deposit!');
+                openModal('auth-modal');
+                return;
+            }
+
+            const weight = prompt(currentLang === 'ar' ? 'أدخل وزن شحنة المخلفات بالكيلوجرام:' : 'Enter waste batch weight in kg:', '2.5');
+            if (weight && !isNaN(weight) && parseFloat(weight) > 0) {
+                const ptsEarned = Math.round(parseFloat(weight) * 40);
+                const batch = {
+                    id: 'RP-' + Math.floor(1000 + Math.random() * 9000),
+                    type: currentLang === 'ar' ? 'مخلفات كركدية ومعامل' : 'Hibiscus & Lab Waste',
+                    weight: parseFloat(weight).toFixed(1) + ' kg',
+                    points: '+' + ptsEarned,
+                    status: currentLang === 'ar' ? 'تم الفحص والموافقة' : 'Verified & Approved'
+                };
+                
+                batches.unshift(batch);
+                localStorage.setItem('rephyto_batches', JSON.stringify(batches));
+                
+                currentUser.points = (currentUser.points || 0) + ptsEarned;
+                localStorage.setItem('rephyto_user', JSON.stringify(currentUser));
+                
+                updateUI();
+                renderBatches();
+                alert(currentLang === 'ar' ? `تم تسجيل الشحنة بنجاح وحصد ${ptsEarned} نقطة!` : `Batch logged successfully! Earned ${ptsEarned} points.`);
+            }
+        }
+
+        function renderBatches() {
+            const tbody = document.getElementById('batch-table-body');
+            if (batches.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted);" data-i18n="no-batches">${i18n[currentLang]["no-batches"]}</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = batches.map(b => `
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding:12px; font-weight:700; color:var(--primary-green);">${b.id}</td>
+                    <td style="padding:12px;">${b.type}</td>
+                    <td style="padding:12px;">${b.weight}</td>
+                    <td style="padding:12px; font-weight:700; color:var(--sage);">${b.points}</td>
+                    <td style="padding:12px;"><span class="val-badge high">${b.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function calculateBiz() {
+            const weight = parseFloat(document.getElementById('biz-weight').value) || 0;
+            const collectCost = parseFloat(document.getElementById('biz-cost-collect').value) || 0;
+            const extractCost = parseFloat(document.getElementById('biz-cost-extract').value) || 0;
+            const fixedCost = parseFloat(document.getElementById('biz-fixed-cost').value) || 0;
+            const yieldUnits = parseFloat(document.getElementById('biz-yield').value) || 0;
+            const priceUnit = parseFloat(document.getElementById('biz-price').value) || 0;
+
+            const totalCost = (weight * collectCost) + (weight * extractCost) + fixedCost;
+            const totalRevenue = yieldUnits * priceUnit;
+            const netProfit = totalRevenue - totalCost;
+            const margin = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : '0.0';
+            const valPerKg = weight > 0 ? (netProfit / weight).toFixed(2) : '0.00';
+            const breakEven = priceUnit > 0 ? Math.ceil(totalCost / priceUnit) : 0;
+
+            document.getElementById('res-total-cost').innerText = totalCost.toFixed(2) + ' ج.م';
+            document.getElementById('res-revenue').innerText = totalRevenue.toFixed(2) + ' ج.م';
+            document.getElementById('res-net-profit').innerText = netProfit.toFixed(2) + ' ج.م';
+            document.getElementById('res-margin').innerText = margin + '%';
+            document.getElementById('res-value-kg').innerText = valPerKg + ' ج.م / كجم';
+            document.getElementById('res-breakeven').innerText = breakEven + ' وحدة';
+        }
+
+        function redeemProduct(name, cost) {
+            if (!currentUser) {
+                alert(currentLang === 'ar' ? 'يرجى تسجيل الدخول لاستبدال النقاط!' : 'Please login to redeem points!');
+                openModal('auth-modal');
+                return;
+            }
+            if ((currentUser.points || 0) < cost) {
+                alert(currentLang === 'ar' ? 'عفواً، رصيدك من النقاط غير كافٍ!' : 'Sorry, insufficient points balance!');
+                return;
+            }
+
+            currentUser.points -= cost;
+            localStorage.setItem('rephyto_user', JSON.stringify(currentUser));
+            updateUI();
+            alert(currentLang === 'ar' ? `تم طلب ${name} بنجاح!` : `Successfully redeemed ${name}!`);
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function switchAuthTab(type) {
+            if (type === 'login') {
+                document.getElementById('tab-login').classList.add('active');
+                document.getElementById('tab-register').classList.remove('active');
+                document.getElementById('auth-login-view').style.display = 'block';
+                document.getElementById('auth-register-view').style.display = 'none';
+            } else {
+                document.getElementById('tab-register').classList.add('active');
+                document.getElementById('tab-login').classList.remove('active');
+                document.getElementById('auth-register-view').style.display = 'block';
+                document.getElementById('auth-login-view').style.display = 'none';
+            }
+        }
+
+        function handleLogin() {
+            const id = document.getElementById('login-id-input').value.trim();
+            if (id.length !== 9 || isNaN(id)) {
+                alert(currentLang === 'ar' ? 'يرجى إدخال رقم جامعي صحيح (9 أرقام)' : 'Please enter a valid 9-digit Student ID');
+                return;
+            }
+
+            currentUser = { name: 'طالب جامعي — ' + id, id: id, points: 150 };
+            localStorage.setItem('rephyto_user', JSON.stringify(currentUser));
+            updateUI();
+            closeModal('auth-modal');
+        }
+
+        function handleRegister() {
+            const name = document.getElementById('reg-name-input').value.trim();
+            const id = document.getElementById('reg-id-input').value.trim();
+
+            if (!name || id.length !== 9 || isNaN(id)) {
+                alert(currentLang === 'ar' ? 'يرجى استكمال البيانات وإدخال رقم جامعي مكون من 9 أرقام' : 'Please complete all fields correctly');
+                return;
+            }
+
+            currentUser = { name: name, id: id, points: 100 };
+            localStorage.setItem('rephyto_user', JSON.stringify(currentUser));
+            updateUI();
+            closeModal('auth-modal');
+        }
+
+        function openCertificate() {
+            if (!currentUser) {
+                alert(currentLang === 'ar' ? 'سجل دخولك لعرض شهادتك المعتمدة!' : 'Please login to view your certificate!');
+                openModal('auth-modal');
+                return;
+            }
+            document.getElementById('cert-student-name').innerText = currentUser.name;
+            document.getElementById('cert-points').innerText = currentUser.points || 0;
+            document.getElementById('cert-issued').innerText = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US');
+            document.getElementById('cert-id').innerText = 'CERT-' + (currentUser.id || '000');
+            openModal('cert-modal');
+        }
+
+        function updateUI() {
+            const userBtn = document.getElementById('user-btn');
+            const loggedUserLabel = document.getElementById('logged-user-label');
+            const userPointsDisplay = document.getElementById('user-points-display');
+
+            if (currentUser) {
+                userBtn.innerHTML = `<i class="fa-solid fa-user-check"></i> <span>${currentUser.name}</span>`;
+                if (loggedUserLabel) loggedUserLabel.innerText = currentUser.name;
+                if (userPointsDisplay) userPointsDisplay.innerText = `${currentUser.points || 0} ${i18n[currentLang]['pts-badge']}`;
+            } else {
+                userBtn.innerHTML = `<i class="fa-solid fa-user"></i> <span>${i18n[currentLang]['btn-student-login']}</span>`;
+                if (loggedUserLabel) loggedUserLabel.innerText = i18n[currentLang]['unregistered'];
+                if (userPointsDisplay) userPointsDisplay.innerText = `0 ${i18n[currentLang]['pts-badge']}`;
+            }
+        }
     </script>
 </body>
 </html>
