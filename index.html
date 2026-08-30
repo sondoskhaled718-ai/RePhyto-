@@ -2197,3 +2197,53 @@
     </script>
 </body>
 </html>
+<script>
+// دالة تحويل الصورة إلى Base64 وإرسالها لـ Gemini API
+async function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+        const base64Image = reader.result;
+
+        // إظهار مؤشر الانتظار إن وجد
+        console.log("جاري تحليل المخلفات النباتية...");
+
+        try {
+            const response = await fetch('/api/gemini', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    prompt: "قم بتحليل نوع هذه المخلفات النباتية، وحساب قيمتها الاقتصادية والبيئية وطرق الاستفادة منها.",
+                    image: base64Image
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.reply) {
+                console.log("نتيجة التحليل:", data.reply);
+                alert(data.reply); // أو اعرضي data.reply في عنصر النتيجة بالموقع
+            } else {
+                alert("خطأ: " + (data.error || "فشل التحليل"));
+            }
+        } catch (err) {
+            console.error("خطأ في الاتصال:", err);
+            alert("حدث خطأ أثناء الاتصال بالسيرفر");
+        }
+    };
+
+    reader.readAsDataURL(file);
+}
+
+// ربط مدخل الصورة (File Input) بالدالة عند اختيار صورة جديدة
+document.addEventListener("DOMContentLoaded", () => {
+    const imageInput = document.querySelector('input[type="file"]');
+    if (imageInput) {
+        imageInput.addEventListener('change', handleImageUpload);
+    }
+});
+</script>
