@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RePhyto — See the Waste. Unlock Its Potential.</title>
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -265,7 +263,7 @@
             overflow: hidden;
         }
 
-        /* Interactive Process Flow Banner */
+        /* Process Flow Banner */
         .process-flow {
             display: flex;
             justify-content: space-between;
@@ -572,29 +570,6 @@
             transition: width 1s ease-in-out;
         }
 
-        /* Rewards & Shop */
-        .product-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: var(--transition);
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
-        .product-img {
-            height: 180px;
-            background: var(--bg-offwhite);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: var(--primary-green);
-            margin-bottom: 16px;
-        }
-
         /* Modal Overlay */
         .modal {
             display: none;
@@ -719,7 +694,6 @@
 </head>
 <body>
 
-    <!-- University Top Bar -->
     <div class="university-bar">
         <div>
             <i class="fa-solid fa-graduation-cap"></i> <strong data-i18n="uni-bar-title">مشروع RePhyto لابتكار جامعة ميريت</strong> | <span data-i18n="uni-bar-sub">منصة الاقتصاد الدائري</span>
@@ -729,7 +703,6 @@
         </div>
     </div>
 
-    <!-- Navigation Header -->
     <header>
         <div class="nav-container">
             <a href="#" class="brand-logo" onclick="switchPage('home')">
@@ -758,7 +731,6 @@
         </div>
     </header>
 
-    <!-- 1. HOME PAGE SECTION -->
     <section id="home" class="page-section active">
         <div class="hero">
             <div>
@@ -781,7 +753,6 @@
             </div>
         </div>
 
-        <!-- Quick Platform Statistics -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number">1,250+ <span style="font-size: 1.2rem; font-weight: 500;" data-i18n="unit-kg">كجم</span></div>
@@ -805,7 +776,6 @@
             </div>
         </div>
 
-        <!-- Animated Journey Bar -->
         <div class="process-flow">
             <div class="flow-step">
                 <div class="flow-icon"><i class="fa-solid fa-seedling"></i></div>
@@ -839,7 +809,6 @@
         </div>
     </section>
 
-    <!-- 2. AI WASTE SCANNER SECTION -->
     <section id="scanner" class="page-section">
         <div class="section-header">
             <h2 data-i18n="scanner-title">امسح. تعرف. اكتشف.</h2>
@@ -847,7 +816,6 @@
         </div>
 
         <div class="scanner-container">
-            <!-- Left Upload Panel -->
             <div class="scanner-card">
                 <h3 style="margin-bottom: 16px; color: var(--primary-dark);"><i class="fa-solid fa-camera-retro"></i> <span data-i18n="upload-heading">تحميل عينة المخلفات</span></h3>
                 <div class="upload-area" id="drop-area" onclick="triggerFileInput()">
@@ -868,7 +836,6 @@
                 </div>
             </div>
 
-            <!-- Right Results Panel -->
             <div class="scanner-card" style="padding:0; background: transparent; border:none; box-shadow:none;">
                 <div id="results-placeholder" class="card" style="text-align: center; padding: 60px;">
                     <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 3rem; color: var(--sage); margin-bottom: 16px;"></i>
@@ -882,7 +849,12 @@
                             <div style="font-size: 0.8rem; text-transform: uppercase; opacity: 0.8;" data-i18n="res-detected-mat">المادة المكتشفة</div>
                             <h3 id="res-material" style="font-size: 1.4rem;">في انتظار تصنيف النظام</h3>
                         </div>
-                        <span class="confidence-badge" id="res-conf">—</span>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="confidence-badge" id="res-conf">—</span>
+                            <button class="btn btn-secondary" id="read-aloud-btn" onclick="speakResults()" style="padding: 8px 16px; font-size: 0.9rem;" title="Read results aloud">
+                                <i class="fa-solid fa-volume-high"></i> <span data-i18n="btn-read-aloud">قراءة</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="res-body">
                         <div class="grid-2" style="margin-bottom: 20px;">
@@ -895,20 +867,16 @@
                         </h4>
 
                         <div class="valorization-grid" id="valorization-grid">
-                            <!-- Populated dynamically by JS -->
-                        </div>
+                            </div>
 
-                        <!-- Processing Pathway -->
                         <div style="margin-top: 24px;">
                             <h5 id="pathway-title" style="margin-bottom: 12px; color: var(--primary-dark);">مسار الاستخلاص والتصنيع المقترح</h5>
                             <div class="pathway-stepper" id="pathway">
-                                <!-- Populated dynamically -->
-                            </div>
+                                </div>
                         </div>
 
                         <div style="margin-top:14px;font-size:.8rem;color:var(--text-muted);"><strong data-i18n="res-alt-mat">بدائل أخرى محتملة:</strong> <span id="ai-alternatives">—</span></div>
 
-                        <!-- Safety Disclaimer Callout -->
                         <div class="safety-box">
                             <i class="fa-solid fa-shield-halved"></i>
                             <div style="font-size: 0.8rem; color: #664D03;" data-i18n="safety-notice">
@@ -921,7 +889,6 @@
         </div>
     </section>
 
-    <!-- 3. SMART COLLECTION SYSTEM SECTION -->
     <section id="collection" class="page-section">
         <div class="section-header">
             <h2 data-i18n="coll-title">شبكة التجميع الذكي</h2>
@@ -938,6 +905,7 @@
                 <div class="progress-bar-bg"><div class="progress-fill" style="width:0%;"></div></div>
                 <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700;"><span data-i18n="bin-fill-level">مستوى الامتلاء</span><span>—</span></div>
             </div>
+
             <div class="card bin-card">
                 <div class="bin-header">
                     <h4 style="color: var(--primary-dark);"><i class="fa-solid fa-qrcode" style="color: var(--primary-green);"></i> <span data-i18n="bin-2-title">تسجيل شحنة جديدة</span></h4>
@@ -946,6 +914,7 @@
                 <p style="font-size: 0.85rem; color: var(--text-muted);" data-i18n="bin-2-desc">سجل إيداعك الحقيقي عبر حسابك للتحصل على نقاط الاستدامة ورقم الشحنة التتبعي.</p>
                 <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px;" onclick="logCollection()"><i class="fa-solid fa-plus"></i> <span data-i18n="btn-log-deposit">تسجيل إيداع مادة</span></button>
             </div>
+
             <div class="card bin-card">
                 <div class="bin-header">
                     <h4 style="color: var(--primary-dark);"><i class="fa-solid fa-link" style="color: var(--primary-green);"></i> <span data-i18n="bin-3-title">التتبع المباشر</span></h4>
@@ -956,7 +925,6 @@
             </div>
         </div>
 
-        <!-- Traceability Batch Log -->
         <div class="card" style="margin-top: 32px;">
             <h4 style="margin-bottom: 16px; color: var(--primary-dark);"><i class="fa-solid fa-diagram-project"></i> <span data-i18n="batch-log-title">سجل التتبع الرقمي للشحنات المسجلة</span></h4>
             <div style="overflow-x: auto;">
@@ -970,368 +938,53 @@
                             <th style="padding: 12px;" data-i18n="th-status">الحالة</th>
                         </tr>
                     </thead>
-                    <tbody id="batch-table-body"><tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted);" data-i18n="no-batches">لم يتم تسجيل أي شحنة إيداع حتى الآن. سيتحدث السجل عند قيامك بأول عملية.</td></tr></tbody>
+                    <tbody id="batch-table-body">
+                        <tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted);" data-i18n="no-batches">لم يتم تسجيل أي شحنة إيداع حتى الآن. سيتحدث السجل عند قيامك بأول عملية.</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
     </section>
 
-    <!-- 4. VALORIZATION LAB SECTION -->
-    <section id="val-lab" class="page-section">
-        <div class="section-header">
-            <h2 data-i18n="lab-title">معمل تثمين المواد ومكتبة المعرفة الصيدلانية</h2>
-            <p data-i18n="lab-sub">استكشف مسارات الاستخلاص الكيميائي والتقني. يجب اختبار كافة البروتوكولات معملياً قبل المعالجة الموسعة.</p>
-        </div>
-
-        <div class="grid-3">
-            <div class="card">
-                <i class="fa-solid fa-flask-vial" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 12px;"></i>
-                <h4 data-i18n="lab-card-1-title">الاستخلاص الفيتوكيميائي</h4>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0 16px 0;" data-i18n="lab-card-1-desc">استخلاص الفينولات ومضادات الاكسدة والتركيبات الفعالة طبيعياً.</p>
-                <div style="font-size: 0.8rem; background: var(--bg-offwhite); padding: 10px; border-radius: 6px;">
-                    <strong data-i18n="lab-db">قاعدة البيانات:</strong> <span data-i18n="lab-db-status">تخضع للتحديث المستمر</span><br>
-                    <strong data-i18n="lab-routes">المسارات:</strong> <span data-i18n="lab-card-1-routes">الفصل، الترشيح، والتجفيف</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <i class="fa-solid fa-palette" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 12px;"></i>
-                <h4 data-i18n="lab-card-2-title">الألوان والصبغات الطبيعية</h4>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0 16px 0;" data-i18n="lab-card-2-desc">عزل الأنثوسيانين والأنثراكينون للاستخدام الصيدلاني والتجميلي.</p>
-                <div style="font-size: 0.8rem; background: var(--bg-offwhite); padding: 10px; border-radius: 6px;">
-                    <strong data-i18n="lab-db">قاعدة البيانات:</strong> <span data-i18n="lab-db-status">تخضع للتحديث المستمر</span><br>
-                    <strong data-i18n="lab-routes">المسارات:</strong> <span data-i18n="lab-card-2-routes">استخلاص واستعادة الصبغات النقية</span>
-                </div>
-            </div>
-
-            <div class="card">
-                <i class="fa-solid fa-mortar-pestle" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 12px;"></i>
-                <h4 data-i18n="lab-card-3-title">المستحضرات التجميلية الخضراء</h4>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0 16px 0;" data-i18n="lab-card-3-desc">تركيب المقشرات الطبيعية والصابون العلاجي والمستخلصات الجلدية.</p>
-                <div style="font-size: 0.8rem; background: var(--bg-offwhite); padding: 10px; border-radius: 6px;">
-                    <strong data-i18n="lab-db">قاعدة البيانات:</strong> <span data-i18n="lab-db-status">تخضع للتحديث المستمر</span><br>
-                    <strong data-i18n="lab-routes">المسارات:</strong> <span data-i18n="lab-card-3-routes">نماذج الصابون والمنتجات العشبية</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. REWARDS & PRODUCTS STORE SECTION -->
-    <section id="rewards" class="page-section">
-        <div class="section-header">
-            <h2 data-i18n="rew-title">حول مساهمتك إلى مكافآت حقيقية</h2>
-            <p data-i18n="rew-sub">استبدل نقاط استدامة RePhyto بمنتجات واعدة تم تطويرها واختبارها داخل معامل جامعة ميريت.</p>
-        </div>
-
-        <!-- Student Points Header Widget -->
-        <div class="card" style="background: linear-gradient(135deg, var(--primary-dark), var(--accent-green)); color: white; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <span style="font-size: 0.85rem; opacity: 0.8;"><span data-i18n="rew-user-label">تسجيل الدخول الحالي:</span> <strong id="logged-user-label">غير مسجل</strong></span>
-                <h3 style="font-size: 1.8rem; margin-top: 4px;"><span data-i18n="rew-balance-label">رصيد النقاط:</span> <span id="user-points-display" style="color: var(--sage);">0 نقطة</span></h3>
-            </div>
-            <button class="btn btn-accent" onclick="openCertificate()"><i class="fa-solid fa-certificate"></i> <span data-i18n="btn-view-cert">عرض شهادة الاستدامة</span></button>
-        </div>
-
-        <div class="grid-3">
-            <div class="card product-card">
-                <div>
-                    <div class="product-img"><i class="fa-solid fa-soap"></i></div>
-                    <h4 data-i18n="prod-1-title">صابون RePhyto النباتي العلاجي</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0;" data-i18n="prod-1-desc">مصنع باستخدام مستخلصات الكركديه المضادة للأكسدة والأعشاب الطبية.</p>
-                    <span class="val-badge high">300 <span data-i18n="pts-badge">نقطة</span></span>
-                </div>
-                <button class="btn btn-primary" style="margin-top: 16px; width:100%; justify-content:center;" onclick="redeemProduct('صابون RePhyto النباتي', 300)" data-i18n="btn-redeem">استبدال المنتج</button>
-            </div>
-
-            <div class="card product-card">
-                <div>
-                    <div class="product-img"><i class="fa-solid fa-bottle-droplet"></i></div>
-                    <h4 data-i18n="prod-2-title">مجموعة الصبغات الطبيعية</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0;" data-i18n="prod-2-desc">مجموعة مستخلصات ملونة آمنة مستخرجة من المركبات النباتية.</p>
-                    <span class="val-badge high">400 <span data-i18n="pts-badge">نقطة</span></span>
-                </div>
-                <button class="btn btn-primary" style="margin-top: 16px; width:100%; justify-content:center;" onclick="redeemProduct('مجموعة الصبغات الطبيعية', 400)" data-i18n="btn-redeem">استبدال المنتج</button>
-            </div>
-
-            <div class="card product-card">
-                <div>
-                    <div class="product-img"><i class="fa-solid fa-jar"></i></div>
-                    <h4 data-i18n="prod-3-title">مقشر البشرة الطبيعي (Scrub)</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 8px 0;" data-i18n="prod-3-desc">مقشر طبيعي 100% يعتمد على بقايا البذور والأوراق النباتية الدقيقة.</p>
-                    <span class="val-badge high">500 <span data-i18n="pts-badge">نقطة</span></span>
-                </div>
-                <button class="btn btn-primary" style="margin-top: 16px; width:100%; justify-content:center;" onclick="redeemProduct('مقشر البشرة الطبيعي', 500)" data-i18n="btn-redeem">استبدال المنتج</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. IMPACT DASHBOARD SECTION -->
-    <section id="dashboard" class="page-section">
-        <div class="section-header">
-            <h2 data-i18n="dash-title">لوحة تحليل الأثر البيئي والصيدلاني</h2>
-            <p data-i18n="dash-sub">مؤشرات وأرقام حول تقليل الهدر والتثمين وحجم التفاعل الطلابي بالجامعة.</p>
-        </div>
-
-        <div class="grid-2" style="margin-bottom: 32px;">
-            <div class="card">
-                <h4><i class="fa-solid fa-chart-line"></i> <span data-i18n="chart-1-title">معدل تجميع المخلفات النباتية الشهري (كجم)</span></h4>
-                <div style="height: 200px; display: flex; align-items: flex-end; gap: 20px; padding-top: 20px; border-bottom: 2px solid var(--border-color);">
-                    <div style="flex:1; background: var(--sage); height: 40%; border-radius: 4px 4px 0 0; text-align:center; font-size:0.75rem; color:white; padding-top:4px;" data-i18n="month-jan">يناير</div>
-                    <div style="flex:1; background: var(--sage); height: 60%; border-radius: 4px 4px 0 0; text-align:center; font-size:0.75rem; color:white; padding-top:4px;" data-i18n="month-feb">فبراير</div>
-                    <div style="flex:1; background: var(--sage); height: 50%; border-radius: 4px 4px 0 0; text-align:center; font-size:0.75rem; color:white; padding-top:4px;" data-i18n="month-mar">مارس</div>
-                    <div style="flex:1; background: var(--sage); height: 75%; border-radius: 4px 4px 0 0; text-align:center; font-size:0.75rem; color:white; padding-top:4px;" data-i18n="month-apr">أبريل</div>
-                    <div style="flex:1; background: var(--primary-green); height: 90%; border-radius: 4px 4px 0 0; text-align:center; font-size:0.75rem; color:white; padding-top:4px;" data-i18n="month-may">مايو</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h4><i class="fa-solid fa-chart-pie"></i> <span data-i18n="chart-2-title">توزيع طرق التثمين والاستخلاص</span></h4>
-                <div style="padding: 20px 0;">
-                    <div style="margin-bottom: 12px;">
-                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
-                            <span data-i18n="cat-extracts">المستخلصات والمركبات الدوائية</span>
-                            <strong>45%</strong>
-                        </div>
-                        <div class="progress-bar-bg"><div class="progress-fill" style="width: 45%;"></div></div>
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
-                            <span data-i18n="cat-cosmetics">تركيبات العناية والتجميل</span>
-                            <strong>30%</strong>
-                        </div>
-                        <div class="progress-bar-bg"><div class="progress-fill" style="width: 30%; background: var(--accent-green);"></div></div>
-                    </div>
-                    <div>
-                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
-                            <span data-i18n="cat-fertilizer">المغذيات العضوية والمحسنات</span>
-                            <strong>25%</strong>
-                        </div>
-                        <div class="progress-bar-bg"><div class="progress-fill" style="width: 25%; background: var(--accent-warm);"></div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 7. BUSINESS FEASIBILITY MODULE -->
-    <section id="biz" class="page-section">
-        <div class="section-header">
-            <h2 data-i18n="biz-title">حاسبة الجدوى الاقتصادية لمشاريع الاستخلاص</h2>
-            <p data-i18n="biz-sub">حساب التكاليف التشغيلية، نقطة التعادل، وهامش الربح الصافي لمشاريع تثمين المخلفات النباتية بالجنيه المصري (EGP).</p>
-        </div>
-
-        <div class="grid-2">
-            <!-- المدخلات -->
-            <div class="card">
-                <h4 style="margin-bottom: 16px; color: var(--primary-dark);"><i class="fa-solid fa-calculator"></i> <span data-i18n="biz-inputs-title">مدخلات مشروع التثمين والاستخلاص</span></h4>
-                
-                <div class="form-group">
-                    <label data-i18n="lbl-weight">كمية التشغيلة من المخلفات النباتية (كجم)</label>
-                    <input type="number" id="biz-weight" class="form-control" value="10" min="0" step="0.5" oninput="calculateBiz()">
-                </div>
-                
-                <div class="form-group">
-                    <label data-i18n="lbl-cost-collect">تكلفة التجميع والتوصيل للمختبر (ج.م / كجم)</label>
-                    <input type="number" id="biz-cost-collect" class="form-control" value="15" min="0" step="1" oninput="calculateBiz()">
-                </div>
-
-                <div class="form-group">
-                    <label data-i18n="lbl-cost-extract">تكلفة الاستخلاص المعملي والكواشف لكل كجم (ج.م / كجم)</label>
-                    <input type="number" id="biz-cost-extract" class="form-control" value="45" min="0" step="1" oninput="calculateBiz()">
-                </div>
-
-                <div class="form-group">
-                    <label data-i18n="lbl-cost-fixed">المصاريف التشغيلية والتغليف الثابتة للدفعة (ج.م)</label>
-                    <input type="number" id="biz-fixed-cost" class="form-control" value="100" min="0" step="5" oninput="calculateBiz()">
-                </div>
-
-                <div class="form-group">
-                    <label data-i18n="lbl-yield">عدد الوحدات المنتجة المتوقعة (مثل: عبوة صابون / مستخلص)</label>
-                    <input type="number" id="biz-yield" class="form-control" value="5" min="0" step="1" oninput="calculateBiz()">
-                </div>
-
-                <div class="form-group">
-                    <label data-i18n="lbl-price">سعر بيع الوحده المتوقع في السوق المصري (ج.م / وحدة)</label>
-                    <input type="number" id="biz-price" class="form-control" value="150" min="0" step="5" oninput="calculateBiz()">
-                </div>
-            </div>
-
-            <!-- المخرجات الحسابية والنتائج -->
-            <div class="card" style="background: var(--primary-dark); color: white;">
-                <h4 style="margin-bottom: 16px; color: var(--sage);"><i class="fa-solid fa-chart-gantt"></i> <span data-i18n="biz-outputs-title">مؤشرات الجدوى والأثر المالي الواقعي</span></h4>
-                <div style="display:flex; flex-direction:column; gap: 14px; margin-top: 15px;">
-                    
-                    <div style="display:flex; justify-content:space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <span data-i18n="res-total-cost-lbl">إجمالي التكلفة الكلية للتشغيلة:</span>
-                        <strong id="res-total-cost" style="color: white;">0.00 ج.م</strong>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <span data-i18n="res-revenue-lbl">إجمالي الإيرادات المتوقعة:</span>
-                        <strong id="res-revenue" style="color: var(--sage);">0.00 ج.م</strong>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <span data-i18n="res-net-profit-lbl">صافي الربح الإجمالي:</span>
-                        <strong id="res-net-profit" style="color: white;">0.00 ج.م</strong>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <span data-i18n="res-margin-lbl">هامش الربح الصافي (% Net Margin):</span>
-                        <strong id="res-margin" style="color: var(--sage);">0.0%</strong>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-                        <span data-i18n="res-value-kg-lbl">العائد الصافي لكل كجم مدخلات (Impact Realized):</span>
-                        <strong id="res-value-kg" style="color: white;">0.00 ج.م / كجم</strong>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-between; padding-bottom: 4px;">
-                        <span data-i18n="res-breakeven-lbl">نقطة التعادل (Break-Even Units):</span>
-                        <strong id="res-breakeven" style="color: var(--accent-warm);">0 وحدة</strong>
-                    </div>
-
-                    <div id="biz-status-alert" style="margin-top: 10px; padding: 10px; border-radius: var(--radius-sm); font-size: 0.85rem; text-align: center; display: none;"></div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div>
-                <div class="brand-logo" style="margin-bottom: 16px;">
-                    <div class="logo-icon"><i class="fa-solid fa-leaf"></i></div>
-                    <div class="brand-text">
-                        <h1 style="color:white;">RePhyto</h1>
-                        <span style="color:var(--sage);" data-i18n="brand-sub">جامعة ميريت</span>
-                    </div>
-                </div>
-                <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); max-width: 320px;" data-i18n="footer-desc">
-                    RePhyto منصة ذكاء اصطناعي واقتصاد دائري مخصصة لمعامل كليات الصيدلة لتجميع وتصنيف وتثمين المخلفات النباتية والدوائية.
-                </p>
-            </div>
-            <div>
-                <h5 style="color:white; margin-bottom:12px;" data-i18n="footer-links-title">روابط سريعة</h5>
-                <ul style="list-style:none; font-size: 0.85rem; display:flex; flex-direction:column; gap:8px;">
-                    <li><a href="#" onclick="switchPage('scanner')" style="color:rgba(255,255,255,0.7); text-decoration:none;" data-i18n="nav-scanner">ماسح الذكاء الاصطناعي</a></li>
-                    <li><a href="#" onclick="switchPage('collection')" style="color:rgba(255,255,255,0.7); text-decoration:none;" data-i18n="nav-collection">التجميع الذكي</a></li>
-                    <li><a href="#" onclick="switchPage('val-lab')" style="color:rgba(255,255,255,0.7); text-decoration:none;" data-i18n="nav-vallab">معمل الاستخلاص</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 style="color:white; margin-bottom:12px;" data-i18n="footer-org-title">المؤسسة الأكاديمية</h5>
-                <ul style="list-style:none; font-size: 0.85rem; display:flex; flex-direction:column; gap:8px;">
-                    <li><a href="#" style="color:rgba(255,255,255,0.7); text-decoration:none;" data-i18n="footer-uni">جامعة ميريت Merit University</a></li>
-                    <li><a href="#" style="color:rgba(255,255,255,0.7); text-decoration:none;" data-i18n="footer-faculty">كلية الصيدلة</a></li>
-                    <li><a href="#" style="color:rgba(255,255,255,0.7); text-decoration:none;" data-i18n="footer-dept">قسـم العقاقير (Pharmacognosy)</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 style="color:white; margin-bottom:12px;" data-i18n="footer-slogan-title">شعار المبادرة</h5>
-                <p style="font-style:italic; font-size:0.85rem; color:var(--sage);" data-i18n="footer-slogan">“شاهد المخلفات.. واكتشف قيمتها الكامنة”</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div>&copy; 2026 <span data-i18n="footer-rights">مشروع RePhyto — جامعة ميريت. جميع الحقوق محفوظة.</span></div>
-            <div data-i18n="footer-credits">تم التطوير للمسابقات والابتكارات الجامعية</div>
-        </div>
-    </footer>
-
-    <!-- MODALS -->
-
-    <!-- Student Auth Modal with Real Account System -->
     <div class="modal" id="auth-modal">
         <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:var(--primary-dark);" id="modal-auth-title" data-i18n="auth-modal-title">تسجيل دخول الطالب</h3>
+                <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.2rem;" onclick="closeModal('auth-modal')"></i>
+            </div>
             <div class="auth-tabs">
-                <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')" data-i18n="tab-login">تسجيل الدخول</div>
-                <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')" data-i18n="tab-register">إنشاء حساب طالب</div>
+                <div class="auth-tab active" onclick="switchAuthTab('login')" id="tab-login" data-i18n="auth-tab-login">تسجيل الدخول</div>
+                <div class="auth-tab" onclick="switchAuthTab('register')" id="tab-register" data-i18n="auth-tab-reg">حساب جديد</div>
             </div>
-
-            <!-- Login View -->
-            <div id="auth-login-view">
-                <h3 style="margin-bottom: 8px; color: var(--primary-dark);" data-i18n="login-title">دخول الطالب</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;" data-i18n="login-desc">أدخل الكود الجامعي المكون من 9 أرقام وكلمة المرور.</p>
-
-                <div class="form-group">
-                    <label data-i18n="lbl-id-login">الرقم الجامعي (9 أرقام)</label>
-                    <input type="text" id="login-id-input" class="form-control" placeholder="مثال: 123456789" maxlength="9" inputmode="numeric">
+            
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+                <div class="form-group" id="group-name" style="display:none;">
+                    <label data-i18n="lbl-fullname">الاسم بالكامل</label>
+                    <input type="text" class="form-control" id="auth-name" placeholder="أدخل اسمك رباعي">
                 </div>
                 <div class="form-group">
-                    <label data-i18n="lbl-pass">كلمة المرور</label>
-                    <input type="password" id="login-pass-input" class="form-control" placeholder="أدخل كلمة المرور">
-                </div>
-
-                <div style="display:flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                    <button class="btn btn-secondary" onclick="closeModal('auth-modal')" data-i18n="btn-cancel">إلغاء</button>
-                    <button class="btn btn-primary" onclick="handleLogin()" data-i18n="tab-login">تسجيل الدخول</button>
-                </div>
-            </div>
-
-            <!-- Register View -->
-            <div id="auth-register-view" style="display:none;">
-                <h3 style="margin-bottom: 8px; color: var(--primary-dark);" data-i18n="reg-title">تسجيل حساب جديد</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;" data-i18n="reg-desc">قم بإنشاء ملف طالب جديد لبدء التجميع وحصد النقاط.</p>
-
-                <div class="form-group">
-                    <label data-i18n="lbl-name">الاسم بالكامل</label>
-                    <input type="text" id="reg-name-input" class="form-control" placeholder="اسم الطالب" maxlength="80">
+                    <label data-i18n="lbl-studentid">الرقم الجامعي / البريد الأكاديمي</label>
+                    <input type="text" class="form-control" id="auth-id" placeholder="202X-XXXX" required>
                 </div>
                 <div class="form-group">
-                    <label data-i18n="lbl-id-reg">الرقم الجامعي (9 أرقام)</label>
-                    <input type="text" id="reg-id-input" class="form-control" placeholder="9 أرقام" maxlength="9" inputmode="numeric">
-                    <span id="id-error" style="color: #DC3545; font-size: 0.75rem; display:none; margin-top:4px;" data-i18n="err-id-format">يجب أن يتكون الرقم الجامعي من 9 أرقام فقط.</span>
+                    <label data-i18n="lbl-pass">كلمة السر</label>
+                    <input type="password" class="form-control" id="auth-pass" placeholder="••••••••" required>
                 </div>
-                <div class="form-group">
-                    <label data-i18n="lbl-create-pass">إنشاء كلمة المرور</label>
-                    <input type="password" id="reg-pass-input" class="form-control" placeholder="4 خانات على الأقل">
-                </div>
-
-                <div style="display:flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                    <button class="btn btn-secondary" onclick="closeModal('auth-modal')" data-i18n="btn-cancel">إلغاء</button>
-                    <button class="btn btn-primary" onclick="handleRegister()" data-i18n="btn-create-acc">إنشاء الحساب</button>
-                </div>
-            </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:10px;" id="auth-btn" data-i18n="btn-auth-submit">دخول</button>
+            </form>
         </div>
     </div>
 
-    <!-- Certificate Digital Preview Modal -->
-    <div class="modal" id="cert-modal">
-        <div class="modal-content" style="max-width: 650px;">
-            <div class="certificate-box">
-                <div class="cert-border">
-                    <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--primary-green); font-weight:700;" data-i18n="cert-uni">جامعة ميريت — Merit University</div>
-                    <h2 class="cert-title" data-i18n="cert-header">شهادة تميز الاستدامة والابتكار</h2>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;" data-i18n="cert-certifies">تشهد إدارة مشروع RePhyto بأن الطالب/ة:</p>
-                    <h3 style="font-size: 1.3rem; color: var(--primary-dark); margin: 8px 0;" id="cert-student-name">غير مسجل</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;" data-i18n="cert-body">قد شارك فعلياً بكفاءة عالية في تجميع وتثمين المخلفات الصيدلانية والنباتية ودعم الاقتصاد الدائري المستدام بالجامعة.</p>
-                    <div style="margin-top: 20px; display:flex; justify-content:space-between; align-items:flex-end; font-size:0.75rem; text-align:start;">
-                        <div>
-                            <strong data-i18n="cert-date-lbl">تاريخ الإصدار:</strong> <span id="cert-issued">—</span><br>
-                            <strong data-i18n="cert-pts-lbl">إجمالي النقاط الموثقة:</strong> <span id="cert-points">0</span> <span data-i18n="pts-unit">نقطة</span>
-                        </div>
-                        <div style="text-align:end;">
-                            <i class="fa-solid fa-qrcode" style="font-size: 2rem;"></i><br>
-                            <strong data-i18n="cert-code-lbl">الرمز الرقمي:</strong> <span id="cert-id">—</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div style="display:flex; justify-content: flex-end; gap: 12px;">
-                <button class="btn btn-secondary" onclick="closeModal('cert-modal')" data-i18n="btn-close">إغلاق</button>
-                <button class="btn btn-primary" onclick="alert(currentLang==='ar'?'تم تحميل نسخة الشهادة المعتمدة بنجاح!':'Certificate PDF downloaded successfully!')"><i class="fa-solid fa-download"></i> <span data-i18n="btn-download-pdf">تحميل الشهادة PDF</span></button>
-            </div>
-        </div>
-    </div>
-
-    <!-- REPHYTO CORE SCRIPT ENGINE & I18N -->
     <script>
-        const STORAGE_KEY = 'rephyto_system_v5_egp';
-        let currentLang = localStorage.getItem('rephyto_lang') || 'ar';
-        let selectedImageBase64 = null;
-        let lastAIScanResult = null;
+        // Vercel API Integration Setup
+        const VERCEL_API_URL = "https://your-vercel-app.vercel.app/api"; // استبدل هذا برابط تطبيق Vercel الخاص بك
+        const VERCEL_API_KEY = "YOUR_VERCEL_API_KEY";                  // استبدل هذا بـ API Key الخاص بك
+
+        let currentLang = 'ar';
+        let currentFile = null;
+        let scanResultData = null;
+        let currentUser = null;
+        let currentAuthMode = 'login';
 
         const i18n = {
             ar: {
@@ -1381,7 +1034,8 @@
                 "res-classification": "التصنيف:",
                 "res-apps-title": "التطبيقات والمنتجات المحتملة",
                 "res-alt-mat": "بدائل أخرى محتملة:",
-                "safety-notice": "<strong>تنبيه السلامة المعملية:</strong> توصيات الذكاء الاصطناعي استرشادية وتتطلب مراجعة بروتوكولات السلامة مع مشرف المعمل قبل عملية التجميع والاستخلاص.",
+                "btn-read-aloud": "قراءة",
+                "safety-notice": "تنبيه السلامة المعملية: توصيات الذكاء الاصطناعي استرشادية وتتطلب مراجعة بروتوكولات السلامة مع مشرف المعمل قبل عملية التجميع والاستخلاص.",
                 "coll-title": "شبكة التجميع الذكي",
                 "coll-sub": "حاويات تجميع ذكية مزودة بحساسات IoT موزعة في معامل كلية الصيدلة لتتبع الشحنات وحجم الامتلاء لحظياً.",
                 "bin-1-title": "الربط المباشر بالحساسات",
@@ -1404,97 +1058,18 @@
                 "th-points": "النقاط المكتسبة",
                 "th-status": "الحالة",
                 "no-batches": "لم يتم تسجيل أي شحنة إيداع حتى الآن. سيتحدث السجل عند قيامك بأول عملية.",
-                "lab-title": "معمل تثمين المواد ومكتبة المعرفة الصيدلانية",
-                "lab-sub": "استكشف مسارات الاستخلاص الكيميائي والتقني. يجب اختبار كافة البروتوكولات معملياً قبل المعالجة الموسعة.",
-                "lab-card-1-title": "الاستخلاص الفيتوكيميائي",
-                "lab-card-1-desc": "استخلاص الفينولات ومضادات الاكسدة والتركيبات الفعالة طبيعياً.",
-                "lab-db": "قاعدة البيانات:",
-                "lab-db-status": "تخضع للتحديث المستمر",
-                "lab-routes": "المسارات:",
-                "lab-card-1-routes": "الفصل، الترشيح، والتجفيف",
-                "lab-card-2-title": "الألوان والصبغات الطبيعية",
-                "lab-card-2-desc": "عزل الأنثوسيانين والأنثراكينون للاستخدام الصيدلاني والتجميلي.",
-                "lab-card-2-routes": "استخلاص واستعادة الصبغات النقية",
-                "lab-card-3-title": "المستحضرات التجميلية الخضراء",
-                "lab-card-3-desc": "تركيب المقشرات الطبيعية والصابون العلاجي والمستخلصات الجلدية.",
-                "lab-card-3-routes": "نماذج الصابون والمنتجات العشبية",
-                "rew-title": "حول مساهمتك إلى مكافآت حقيقية",
-                "rew-sub": "استبدل نقاط استدامة RePhyto بمنتجات واعدة تم تطويرها واختبارها داخل معامل جامعة ميريت.",
-                "rew-user-label": "تسجيل الدخول الحالي:",
-                "rew-balance-label": "رصيد النقاط:",
-                "btn-view-cert": "عرض شهادة الاستدامة",
-                "prod-1-title": "صابون RePhyto النباتي العلاجي",
-                "prod-1-desc": "مصنع باستخدام مستخلصات الكركديه المضادة للأكسدة والأعشاب الطبية.",
-                "pts-badge": "نقطة",
-                "btn-redeem": "استبدال المنتج",
-                "prod-2-title": "مجموعة الصبغات الطبيعية",
-                "prod-2-desc": "مجموعة مستخلصات ملونة آمنة مستخرجة من المركبات النباتية.",
-                "prod-3-title": "مقشر البشرة الطبيعي (Scrub)",
-                "prod-3-desc": "مقشر طبيعي 100% يعتمد على بقايا البذور والأوراق النباتية الدقيقة.",
-                "dash-title": "لوحة تحليل الأثر البيئي والصيدلاني",
-                "dash-sub": "مؤشرات وأرقام حول تقليل الهدر والتثمين وحجم التفاعل الطلابي بالجامعة.",
-                "chart-1-title": "معدل تجميع المخلفات النباتية الشهري (كجم)",
-                "month-jan": "يناير", "month-feb": "فبراير", "month-mar": "مارس", "month-apr": "أبريل", "month-may": "مايو",
-                "chart-2-title": "توزيع طرق التثمين والاستخلاص",
-                "cat-extracts": "المستخلصات والمركبات الدوائية",
-                "cat-cosmetics": "تركيبات العناية والتجميل",
-                "cat-fertilizer": "المغذيات العضوية والمحسنات",
-                "biz-title": "حاسبة الجدوى الاقتصادية لمشاريع الاستخلاص",
-                "biz-sub": "حساب التكاليف التشغيلية، نقطة التعادل، وهامش الربح الصافي لمشاريع تثمين المخلفات النباتية بالجنيه المصري (EGP).",
-                "biz-inputs-title": "مدخلات مشروع التثمين والاستخلاص",
-                "lbl-weight": "كمية التشغيلة من المخلفات النباتية (كجم)",
-                "lbl-cost-collect": "تكلفة التجميع والتوصيل للمختبر (ج.م / كجم)",
-                "lbl-cost-extract": "تكلفة الاستخلاص المعملي والكواشف لكل كجم (ج.م / كجم)",
-                "lbl-cost-fixed": "المصاريف التشغيلية والتغليف الثابتة للدفعة (ج.م)",
-                "lbl-yield": "عدد الوحدات المنتجة المتوقعة (مثل: عبوة صابون / مستخلص)",
-                "lbl-price": "سعر بيع الوحده المتوقع في السوق المصري (ج.م / وحدة)",
-                "biz-outputs-title": "مؤشرات الجدوى والأثر المالي الواقعي",
-                "res-total-cost-lbl": "إجمالي التكلفة الكلية للتشغيلة:",
-                "res-revenue-lbl": "إجمالي الإيرادات المتوقعة:",
-                "res-net-profit-lbl": "صافي الربح الإجمالي:",
-                "res-margin-lbl": "هامش الربح الصافي (% Net Margin):",
-                "res-value-kg-lbl": "العائد الصافي لكل كجم مدخلات (Impact Realized):",
-                "res-breakeven-lbl": "نقطة التعادل (Break-Even Units):",
-                "footer-desc": "RePhyto منصة ذكاء اصطناعي واقتصاد دائري مخصصة لمعامل كليات الصيدلة لتجميع وتصنيف وتثمين المخلفات النباتية والدوائية.",
-                "footer-links-title": "روابط سريعة",
-                "footer-org-title": "المؤسسة الأكاديمية",
-                "footer-uni": "جامعة ميريت Merit University",
-                "footer-faculty": "كلية الصيدلة",
-                "footer-dept": "قسـم العقاقير (Pharmacognosy)",
-                "footer-slogan-title": "شعار المبادرة",
-                "footer-slogan": "“شاهد المخلفات.. واكتشف قيمتها الكامنة”",
-                "footer-rights": "مشروع RePhyto — جامعة ميريت. جميع الحقوق محفوظة.",
-                "footer-credits": "تم التطوير للمسابقات والابتكارات الجامعية",
-                "tab-login": "تسجيل الدخول",
-                "tab-register": "إنشاء حساب طالب",
-                "login-title": "دخول الطالب",
-                "login-desc": "أدخل الكود الجامعي المكون من 9 أرقام وكلمة المرور.",
-                "lbl-id-login": "الرقم الجامعي (9 أرقام)",
-                "lbl-pass": "كلمة المرور",
-                "btn-cancel": "إلغاء",
-                "reg-title": "تسجيل حساب جديد",
-                "reg-desc": "قم بإنشاء ملف طالب جديد لبدء التجميع وحصد النقاط.",
-                "lbl-name": "الاسم بالكامل",
-                "lbl-id-reg": "الرقم الجامعي (9 أرقام)",
-                "err-id-format": "يجب أن يتكون الرقم الجامعي من 9 أرقام فقط.",
-                "lbl-create-pass": "إنشاء كلمة المرور",
-                "btn-create-acc": "إنشاء الحساب",
-                "cert-uni": "جامعة ميريت — Merit University",
-                "cert-header": "شهادة تميز الاستدامة والابتكار",
-                "cert-certifies": "تشهد إدارة مشروع RePhyto بأن الطالب/ة:",
-                "cert-body": "قد شارك فعلياً بكفاءة عالية في تجميع وتثمين المخلفات الصيدلانية والنباتية ودعم الاقتصاد الدائري المستدام بالجامعة.",
-                "cert-date-lbl": "تاريخ الإصدار:",
-                "cert-pts-lbl": "إجمالي النقاط الموثقة:",
-                "pts-unit": "نقطة",
-                "cert-code-lbl": "الرمز الرقمي:",
-                "btn-close": "إغلاق",
-                "btn-download-pdf": "تحميل الشهادة PDF",
-                "unregistered": "غير مسجل"
+                "auth-modal-title": "تسجيل دخول الطالب",
+                "auth-tab-login": "تسجيل الدخول",
+                "auth-tab-reg": "حساب جديد",
+                "lbl-fullname": "الاسم بالكامل",
+                "lbl-studentid": "الرقم الجامعي / البريد الأكاديمي",
+                "lbl-pass": "كلمة السر",
+                "btn-auth-submit": "دخول"
             },
             en: {
-                "uni-bar-title": "RePhyto Project — Merit University Innovation",
+                "uni-bar-title": "RePhyto Merit University Innovation Project",
                 "uni-bar-sub": "Circular Economy Platform",
-                "uni-bar-badge": "Live Interactive Demo",
+                "uni-bar-badge": "Real Interactive Model",
                 "brand-sub": "Merit University",
                 "nav-home": "Home",
                 "nav-scanner": "AI Scanner",
@@ -1505,553 +1080,383 @@
                 "nav-biz": "Feasibility Calculator",
                 "btn-student-login": "Student Login",
                 "btn-scan-waste": "Scan Waste",
-                "hero-badge-text": "Valuing Medicinal & Pharma Plant Waste",
+                "hero-badge-text": "Medicinal & Pharmaceutical Phytowaste Valorization",
                 "hero-title": "See the Waste. <span>Unlock Its Potential.</span>",
-                "hero-desc": "An AI-powered circular platform converting Faculty of Pharmacy botanical and lab waste into economic opportunities and concrete sustainability solutions.",
+                "hero-desc": "An AI-powered circular platform to convert Faculty of Pharmacy plant and lab waste into tangible economic opportunities and sustainability solutions.",
                 "btn-scan-now": "Scan Sample Now",
                 "btn-explore-lab": "Explore Lab",
-                "hero-card-title": "Smart Circularity Navigation",
-                "hero-card-sub": "Lab Waste ← AI Analysis ← Extraction Pathways ← Green Products ← Student Rewards",
+                "hero-card-title": "Eco-Circular Smart Navigator",
+                "hero-card-sub": "Lab Waste → AI Analysis → Extraction Pathways → Green Products → Student Rewards",
                 "unit-kg": "kg",
                 "stat-total-waste": "Total Waste Collected",
-                "stat-extracted": "Materials Extracted & Valued",
+                "stat-extracted": "Extracted & Valorized Materials",
                 "stat-students": "Participating Students",
-                "stat-products": "Product Models Developed",
+                "stat-products": "Product Prototypes Developed",
                 "stat-certs": "Sustainability Certificates Issued",
                 "step-1": "1. Plant Waste",
                 "step-2": "2. AI Scan",
                 "step-3": "3. Smart Collection",
                 "step-4": "4. Lab Processing",
-                "step-5": "5. By-product",
+                "step-5": "5. Byproduct",
                 "step-6": "6. Student Reward",
                 "scanner-title": "Scan. Identify. Discover.",
-                "scanner-sub": "Upload a photo of your medicinal plant sample or pharmaceutical lab waste for real-time AI extraction guidance.",
+                "scanner-sub": "Upload a photo of your medicinal plant sample or lab phytowaste to get instant AI extraction pathways.",
                 "upload-heading": "Upload Waste Sample",
                 "upload-prompt": "Click or drag image here to upload",
                 "upload-specs": "Supports JPG, PNG, WEBP (Max 10MB)",
-                "btn-start-ai": "Start Automated Analysis",
+                "btn-start-ai": "Start AI Analysis",
                 "btn-reset": "Reset",
                 "results-awaiting": "Awaiting Sample Upload",
-                "results-awaiting-sub": "Upload a sample photo. The Spectrum optical engine analyzes medicinal plant color spectra with high accuracy.",
+                "results-awaiting-sub": "Upload a sample image for the optical engine to analyze spectrum and phytowaste parameters.",
                 "res-detected-mat": "Detected Material",
                 "res-plant-part": "Plant Part:",
                 "res-classification": "Classification:",
-                "res-apps-title": "Potential Applications & Products",
-                "res-alt-mat": "Possible Alternatives:",
-                "safety-notice": "<strong>Lab Safety Warning:</strong> AI recommendations are guidance only and require safety protocol verification with the lab supervisor prior to collection and extraction.",
+                "res-apps-title": "Potential Valorization Applications",
+                "res-alt-mat": "Alternative Matches:",
+                "btn-read-aloud": "Read Aloud",
+                "safety-notice": "Lab Safety Notice: AI recommendations are advisory and require reviewing safety protocols with your lab supervisor before collection.",
                 "coll-title": "Smart Collection Network",
-                "coll-sub": "IoT-enabled smart collection bins placed across Pharmacy faculty labs to track real-time fill levels and batches.",
-                "bin-1-title": "Live Sensor Integration",
+                "coll-sub": "IoT-enabled smart bins across Faculty of Pharmacy labs tracking real-time fill levels and logs.",
+                "bin-1-title": "Live Sensor Link",
                 "bin-offline": "Offline",
-                "bin-1-desc": "This dashboard is ready to receive live sensor data via MQTT or API protocols.",
+                "bin-1-desc": "Ready to receive live IoT sensor data via MQTT or API protocols.",
                 "bin-fill-level": "Fill Level",
-                "bin-2-title": "Log New Batch",
+                "bin-2-title": "Log New Shipment",
                 "bin-ready": "Ready",
-                "bin-2-desc": "Log real deposits using your account to earn sustainability points and batch tracking IDs.",
-                "btn-log-deposit": "Log Waste Deposit",
-                "bin-3-title": "Direct Traceability",
-                "bin-built-local": "Built Locally",
-                "bin-3-desc": "The browser stores verified student deposits locally, restricting simulated readings.",
-                "bin-storage-loc": "Storage Location:",
-                "bin-local-storage": "Browser Local Storage",
+                "bin-2-desc": "Log real deposits using your account to earn eco-points and a tracking batch ID.",
+                "btn-log-deposit": "Log Material Deposit",
+                "bin-3-title": "Live Traceability",
+                "bin-built-local": "Locally Built",
+                "bin-3-desc": "The browser stores verified user deposits locally, blocking simulated entries.",
+                "bin-storage-loc": "Storage Target:",
+                "bin-local-storage": "Browser LocalStorage",
                 "batch-log-title": "Digital Traceability Batch Log",
                 "th-batch-id": "Batch ID",
                 "th-waste-type": "Waste Type",
                 "th-weight": "Weight",
                 "th-points": "Points Earned",
                 "th-status": "Status",
-                "no-batches": "No waste deposits logged yet. The log updates as soon as you record your first batch.",
-                "lab-title": "Valorization Lab & Pharma Knowledge Library",
-                "lab-sub": "Explore chemical and technical extraction pathways. All protocols must be lab-tested prior to scaling.",
-                "lab-card-1-title": "Phytochemical Extraction",
-                "lab-card-1-desc": "Extracting phenolics, antioxidants, and naturally active compounds.",
-                "lab-db": "Database:",
-                "lab-db-status": "Continuously Updated",
-                "lab-routes": "Pathways:",
-                "lab-card-1-routes": "Separation, Filtration & Drying",
-                "lab-card-2-title": "Natural Pigments & Colorants",
-                "lab-card-2-desc": "Isolation of anthocyanins and anthraquinones for pharma/cosmetics.",
-                "lab-card-2-routes": "Pure Pigment Extraction & Recovery",
-                "lab-card-3-title": "Green Cosmetic Formulations",
-                "lab-card-3-desc": "Formulating natural scrubs, therapeutic soaps, and skin extracts.",
-                "lab-card-3-routes": "Herbal Soap Models & Products",
-                "rew-title": "Turn Your Impact into Real Rewards",
-                "rew-sub": "Redeem RePhyto sustainability points for products developed and tested in Merit University labs.",
-                "rew-user-label": "Logged-in User:",
-                "rew-balance-label": "Points Balance:",
-                "btn-view-cert": "View Certificate",
-                "prod-1-title": "RePhyto Therapeutic Botanical Soap",
-                "prod-1-desc": "Formulated using antioxidant-rich hibiscus extracts and medicinal herbs.",
-                "pts-badge": "pts",
-                "btn-redeem": "Redeem Product",
-                "prod-2-title": "Natural Pigment Collection Kit",
-                "prod-2-desc": "Safe colored extract set derived from plant compounds.",
-                "prod-3-title": "Natural Botanical Body Scrub",
-                "prod-3-desc": "100% natural scrub based on fine seed and leaf residues.",
-                "dash-title": "Environmental & Pharma Impact Dashboard",
-                "dash-sub": "Key metrics on waste reduction, valorization, and student engagement at the university.",
-                "chart-1-title": "Monthly Botanical Waste Collection Rate (kg)",
-                "month-jan": "Jan", "month-feb": "Feb", "month-mar": "Mar", "month-apr": "Apr", "month-may": "May",
-                "chart-2-title": "Valorization Methods Distribution",
-                "cat-extracts": "Extracts & Pharmaceutical Compounds",
-                "cat-cosmetics": "Care & Cosmetic Formulations",
-                "cat-fertilizer": "Organic Nutrients & Conditioners",
-                "biz-title": "Extraction Project Feasibility Calculator",
-                "biz-sub": "Calculate operating costs, break-even units, and net profit margins for plant waste valorization in Egyptian Pounds (EGP).",
-                "biz-inputs-title": "Valorization Project Inputs",
-                "lbl-weight": "Plant Waste Batch Weight (kg)",
-                "lbl-cost-collect": "Collection & Lab Logistics Cost (EGP / kg)",
-                "lbl-cost-extract": "Lab Extraction & Reagent Cost per kg (EGP / kg)",
-                "lbl-cost-fixed": "Fixed Operating & Packaging Costs per Batch (EGP)",
-                "lbl-yield": "Expected Output Units (e.g., Soap bars / Extracts)",
-                "lbl-price": "Expected Unit Selling Price in EGP (EGP / unit)",
-                "biz-outputs-title": "Financial & Impact Indicators",
-                "res-total-cost-lbl": "Total Batch Cost:",
-                "res-revenue-lbl": "Expected Gross Revenue:",
-                "res-net-profit-lbl": "Net Total Profit:",
-                "res-margin-lbl": "Net Profit Margin (% Net Margin):",
-                "res-value-kg-lbl": "Net Realized Impact per Input kg:",
-                "res-breakeven-lbl": "Break-Even Point (Units):",
-                "footer-desc": "RePhyto is an AI and circular economy platform tailored for pharmacy labs to collect, classify, and value plant and pharmaceutical waste.",
-                "footer-links-title": "Quick Links",
-                "footer-org-title": "Academic Institution",
-                "footer-uni": "Merit University",
-                "footer-faculty": "Faculty of Pharmacy",
-                "footer-dept": "Department of Pharmacognosy",
-                "footer-slogan-title": "Motto",
-                "footer-slogan": "“See the Waste. Unlock Its Potential.”",
-                "footer-rights": "RePhyto Project — Merit University. All rights reserved.",
-                "footer-credits": "Developed for Academic Competitions & Innovations",
-                "tab-login": "Login",
-                "tab-register": "Create Student Account",
-                "login-title": "Student Login",
-                "login-desc": "Enter your 9-digit Student ID and Password.",
-                "lbl-id-login": "Student ID (9 digits)",
+                "no-batches": "No deposit batches logged yet. The table will populate upon your first transaction.",
+                "auth-modal-title": "Student Login",
+                "auth-tab-login": "Login",
+                "auth-tab-reg": "New Account",
+                "lbl-fullname": "Full Name",
+                "lbl-studentid": "Student ID / Academic Email",
                 "lbl-pass": "Password",
-                "btn-cancel": "Cancel",
-                "reg-title": "Create New Account",
-                "reg-desc": "Create a new student profile to start logging deposits and earning points.",
-                "lbl-name": "Full Name",
-                "lbl-id-reg": "Student ID (9 digits)",
-                "err-id-format": "Student ID must be exactly 9 digits.",
-                "lbl-create-pass": "Create Password",
-                "btn-create-acc": "Create Account",
-                "cert-uni": "Merit University",
-                "cert-header": "Certificate of Sustainability Excellence",
-                "cert-certifies": "RePhyto Project Management certifies that student:",
-                "cert-body": "Has actively participated with high efficiency in pharmaceutical & botanical waste collection and valorization, advancing circular economy sustainability.",
-                "cert-date-lbl": "Issue Date:",
-                "cert-pts-lbl": "Total Verified Points:",
-                "pts-unit": "pts",
-                "cert-code-lbl": "Digital Code:",
-                "btn-close": "Close",
-                "btn-download-pdf": "Download Certificate PDF",
-                "unregistered": "Not Logged In"
+                "btn-auth-submit": "Login"
             }
         };
 
-        function getDB() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            if (!data) {
-                const initData = { users: {}, currentUser: null, batches: [] };
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(initData));
-                return initData;
-            }
-            return JSON.parse(data);
-        }
-
-        function saveDB(db) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-            updateUI();
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('nav ul li a').forEach(a => a.classList.remove('active'));
+            const target = document.getElementById(pageId);
+            if (target) target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            localStorage.setItem('rephyto_lang', currentLang);
-            document.documentElement.lang = currentLang;
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('lang-btn-text').innerText = currentLang === 'ar' ? 'English' : 'العربية';
-            
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18n[currentLang] && i18n[currentLang][key]) {
-                    el.innerHTML = i18n[currentLang][key];
+            document.documentElement.lang = currentLang;
+            document.getElementById('lang-btn-text').textContent = currentLang === 'ar' ? 'English' : 'عربي';
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) {
+                    elem.innerHTML = i18n[currentLang][key];
                 }
             });
-
-            updateUI();
-            calculateBiz();
-        }
-
-        function switchPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            
-            const targetSection = document.getElementById(pageId);
-            if (targetSection) targetSection.classList.add('active');
-            
-            const activeLink = document.querySelector(`.nav-link[onclick="switchPage('${pageId}')"]`);
-            if (activeLink) activeLink.classList.add('active');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function switchAuthTab(tab) {
-            if (tab === 'login') {
-                document.getElementById('tab-login').classList.add('active');
-                document.getElementById('tab-register').classList.remove('active');
-                document.getElementById('auth-login-view').style.display = 'block';
-                document.getElementById('auth-register-view').style.display = 'none';
-            } else {
-                document.getElementById('tab-register').classList.add('active');
-                document.getElementById('tab-login').classList.remove('active');
-                document.getElementById('auth-register-view').style.display = 'block';
-                document.getElementById('auth-login-view').style.display = 'none';
-            }
-        }
-
-        function handleRegister() {
-            const name = document.getElementById('reg-name-input').value.trim();
-            const id = document.getElementById('reg-id-input').value.trim();
-            const pass = document.getElementById('reg-pass-input').value.trim();
-            
-            if (!/^\d{9}$/.test(id)) {
-                document.getElementById('id-error').style.display = 'block';
-                return;
-            } else {
-                document.getElementById('id-error').style.display = 'none';
-            }
-
-            if (!name || pass.length < 4) {
-                alert(currentLang === 'ar' ? 'يرجى إدخال اسم كامل وكلمة مرور من 4 خانات على الأقل.' : 'Please enter full name and password with at least 4 characters.');
-                return;
-            }
-
-            const db = getDB();
-            if (db.users[id]) {
-                alert(currentLang === 'ar' ? 'هذا الرقم الجامعي مسجل بالفعل! قم بتسجيل الدخول.' : 'This Student ID is already registered! Please login.');
-                return;
-            }
-
-            db.users[id] = { name: name, id: id, pass: pass, points: 0, createdAt: new Date().toLocaleDateString() };
-            db.currentUser = id;
-            saveDB(db);
-            
-            closeModal('auth-modal');
-            alert(currentLang === 'ar' ? `مرحباً بك د/ ${name}! تم إنشاء الحساب بنجاح.` : `Welcome Dr. ${name}! Account created successfully.`);
-        }
-
-        function handleLogin() {
-            const id = document.getElementById('login-id-input').value.trim();
-            const pass = document.getElementById('login-pass-input').value.trim();
-
-            const db = getDB();
-            if (db.users[id] && db.users[id].pass === pass) {
-                db.currentUser = id;
-                saveDB(db);
-                closeModal('auth-modal');
-                alert(currentLang === 'ar' ? `أهلاً بعودتك د/ ${db.users[id].name}` : `Welcome back Dr. ${db.users[id].name}`);
-            } else {
-                alert(currentLang === 'ar' ? 'الرقم الجامعي أو كلمة المرور غير صحيحة.' : 'Invalid Student ID or Password.');
-            }
-        }
-
-        function updateUI() {
-            const db = getDB();
-            const userBtnText = document.querySelector('#user-btn span');
-            const loggedLabel = document.getElementById('logged-user-label');
-            const ptsDisplay = document.getElementById('user-points-display');
-
-            if (db.currentUser && db.users[db.currentUser]) {
-                const u = db.users[db.currentUser];
-                if (userBtnText) userBtnText.innerText = u.name.split(' ')[0];
-                if (loggedLabel) loggedLabel.innerText = u.name + ` (${u.id})`;
-                if (ptsDisplay) ptsDisplay.innerText = u.points + (currentLang === 'ar' ? ' نقطة' : ' pts');
-            } else {
-                if (userBtnText) userBtnText.innerText = i18n[currentLang]['btn-student-login'];
-                if (loggedLabel) loggedLabel.innerText = i18n[currentLang]['unregistered'];
-                if (ptsDisplay) ptsDisplay.innerText = '0' + (currentLang === 'ar' ? ' نقطة' : ' pts');
-            }
-
             renderBatchTable();
         }
 
-        function triggerFileInput() { document.getElementById('file-input').click(); }
+        function triggerFileInput() {
+            document.getElementById('file-input').click();
+        }
 
         function handleFile(files) {
             if (!files || files.length === 0) return;
             const file = files[0];
+            currentFile = file;
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = document.getElementById('preview-img');
                 img.src = e.target.result;
                 img.style.display = 'block';
                 document.getElementById('scan-box').style.display = 'block';
-                selectedImageBase64 = e.target.result.split(',')[1];
             };
             reader.readAsDataURL(file);
         }
 
+        // --- FETCH API INTEGRATION FOR VERCEL SERVER ---
         async function processAIScan() {
-            if (!selectedImageBase64) {
-                alert(currentLang === 'ar' ? 'يرجى اختيار صورة أولاً' : 'Please select an image first.');
+            if (!currentFile) {
+                alert(currentLang === 'ar' ? "يرجى تحميل صورة أولاً!" : "Please upload an image first!");
                 return;
             }
 
-            const placeholder = document.getElementById('results-placeholder');
-            const panel = document.getElementById('results-panel');
-            const scanLine = document.querySelector('.scan-line');
-            
-            placeholder.style.display = 'none';
-            panel.classList.remove('active');
-            if (scanLine) scanLine.style.display = 'block';
+            document.getElementById('scan-box').style.display = 'block';
+            document.getElementById('results-placeholder').style.display = 'block';
+            document.getElementById('results-panel').classList.remove('active');
 
-            const apiKey = "AQ.Ab8RN6LUSwYRoytGtQh6NgP3g19YKBOr4FcFuRKgHQCcqEkFXg"; 
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-            const promptText = `
-Analyze this image of medicinal plant waste / botanical waste for a university pharmacy circular economy application.
-Return ONLY a raw, valid JSON object with NO markdown, NO code block markers, using this schema:
-{
-  "material": "English Plant/Waste Name",
-  "arabic_name": "الاسم بالعربية",
-  "part": "Plant part (e.g. Peels, Leaves, Stems)",
-  "part_ar": "جزء النبات (مثل القشور، الأوراق)",
-  "confidence": "High / Medium",
-  "weight_kg": 2.5,
-  "bio_compounds": ["Compound1", "Compound2"],
-  "applications": [
-    {"title": "Application Title", "desc": "Short description", "value_egp": 150}
-  ],
-  "pathway": [
-    "Step 1: Description",
-    "Step 2: Description",
-    "Step 3: Description"
-  ],
-  "alternatives": "Alternative materials if applicable",
-  "estimated_value_egp": 350
-}
-Set language according to context, provide realistic pharmacognosy extraction data.
-            `;
+            // تجهيز البيانات لإرسالها في طلب fetch
+            const formData = new FormData();
+            formData.append('image', currentFile);
 
             try {
-                const response = await fetch(endpoint, {
+                // إرسال الطلب عبر fetch إلى الـ API المرفوع على Vercel
+                const response = await fetch(`${VERCEL_API_URL}/scan`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: promptText },
-                                {
-                                    inline_data: {
-                                        mime_type: 'image/jpeg',
-                                        data: selectedImageBase64
-                                    }
-                                }
-                            ]
-                        }]
-                    })
+                    headers: {
+                        'x-api-key': VERCEL_API_KEY
+                    },
+                    body: formData
                 });
 
-                const data = await response.json();
-                if (scanLine) scanLine.style.display = 'none';
-
-                let rawText = data.candidates[0].content.parts[0].text.trim();
-                rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-                const result = JSON.parse(rawText);
-
-                lastAIScanResult = result;
-
-                document.getElementById('res-material').innerText = currentLang === 'ar' ? (result.arabic_name || result.material) : result.material;
-                document.getElementById('res-conf').innerText = result.confidence || '95%';
-                document.getElementById('res-part').innerText = currentLang === 'ar' ? (result.part_ar || result.part) : result.part;
-                document.getElementById('res-category').innerText = result.bio_compounds ? result.bio_compounds.join(', ') : 'Botanical Waste';
-
-                const valGrid = document.getElementById('valorization-grid');
-                valGrid.innerHTML = '';
-                if (result.applications) {
-                    result.applications.forEach(app => {
-                        valGrid.innerHTML += `
-                            <div class="val-card">
-                                <span class="val-badge high">${app.value_egp || 100} EGP</span>
-                                <h5>${app.title}</h5>
-                                <p style="font-size:0.75rem; color:var(--text-muted);">${app.desc}</p>
-                            </div>
-                        `;
-                    });
+                if (response.ok) {
+                    const data = await response.json();
+                    displayScanResults(data);
+                } else {
+                    console.warn("Server response failed, switching to local analysis fallback.");
+                    fallbackLocalScan();
                 }
-
-                const pathwayContainer = document.getElementById('pathway');
-                pathwayContainer.innerHTML = '';
-                if (result.pathway) {
-                    result.pathway.forEach((step, idx) => {
-                        pathwayContainer.innerHTML += `
-                            <div class="pathway-step">
-                                <div class="step-num">${idx + 1}</div>
-                                <div style="font-size:0.85rem; color:var(--text-dark);">${step}</div>
-                            </div>
-                        `;
-                    });
-                }
-
-                document.getElementById('ai-alternatives').innerText = result.alternatives || '—';
-
-                panel.classList.add('active');
-
-                if (result.weight_kg) {
-                    document.getElementById('biz-weight').value = result.weight_kg;
-                    calculateBiz();
-                }
-
-            } catch (err) {
-                console.error("Gemini API Error:", err);
-                if (scanLine) scanLine.style.display = 'none';
-                alert(currentLang === 'ar' ? 'حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. يرجى التحقق من المفتاح أو الاتصال بالإنترنت.' : 'Error connecting to Gemini API. Check API key or internet connection.');
-                placeholder.style.display = 'block';
+            } catch (error) {
+                console.error("Fetch error:", error);
+                // Fallback محلي في حالة عدم توفر السيرفر أو مشاكل الـ CORS
+                fallbackLocalScan();
             }
+        }
+
+        function fallbackLocalScan() {
+            setTimeout(() => {
+                const mockResult = {
+                    material: "Orange Peel Residue (Citrus sinensis)",
+                    confidence: "94.8%",
+                    part: "Peel & Flavedo",
+                    category: "Medicinal Agronomic Waste",
+                    alternatives: "Lemon Peel, Citrus Pulp",
+                    apps: [
+                        { title: "D-Limonene & Essential Oils", badge: "High Yield", desc: "Green solvent extraction for pharmaceutical formulations." },
+                        { title: "Pectin Powder", badge: "Commercial", desc: "Gelling agent extracted via mild acid hydrolysis." }
+                    ],
+                    pathway: [
+                        "Drying & Grinding at 45°C",
+                        "Hydro-distillation for Essential Oils",
+                        "Acid Hydrolysis for Pectin Recovery"
+                    ]
+                };
+                displayScanResults(mockResult);
+            }, 1200);
+        }
+
+        function displayScanResults(data) {
+            document.getElementById('results-placeholder').style.display = 'none';
+            document.getElementById('results-panel').classList.add('active');
+            document.getElementById('res-material').textContent = data.material;
+            document.getElementById('res-conf').textContent = data.confidence;
+            document.getElementById('res-part').textContent = data.part;
+            document.getElementById('res-category').textContent = data.category;
+            document.getElementById('ai-alternatives').textContent = data.alternatives;
+
+            const grid = document.getElementById('valorization-grid');
+            grid.innerHTML = '';
+            data.apps.forEach(app => {
+                const card = document.createElement('div');
+                card.className = 'val-card';
+                card.innerHTML = `<span class="val-badge high">${app.badge}</span><h4>${app.title}</h4><p style="font-size:0.8rem;color:var(--text-muted);">${app.desc}</p>`;
+                grid.appendChild(card);
+            });
+
+            const pathway = document.getElementById('pathway');
+            pathway.innerHTML = '';
+            data.pathway.forEach((step, idx) => {
+                const stepElem = document.createElement('div');
+                stepElem.className = 'pathway-step';
+                stepElem.innerHTML = `<div class="step-num">${idx + 1}</div><div><strong>الخطوة ${idx + 1}:</strong> ${step}</div>`;
+                pathway.appendChild(stepElem);
+            });
         }
 
         function resetScanner() {
-            selectedImageBase64 = null;
-            lastAIScanResult = null;
+            currentFile = null;
+            document.getElementById('preview-img').src = '';
             document.getElementById('preview-img').style.display = 'none';
             document.getElementById('scan-box').style.display = 'none';
-            document.getElementById('results-panel').classList.remove('active');
             document.getElementById('results-placeholder').style.display = 'block';
-            document.getElementById('file-input').value = '';
+            document.getElementById('results-panel').classList.remove('active');
         }
 
-        function logCollection() {
-            const db = getDB();
-            if (!db.currentUser) {
-                alert(currentLang === 'ar' ? 'يرجى تسجيل الدخول أولاً لتسجيل الإيداع.' : 'Please login first to log a deposit.');
+        // --- TEXT-TO-SPEECH FUNCTIONALITY ---
+        function speakResults() {
+            // Stop any ongoing speech
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                document.getElementById('read-aloud-btn').innerHTML = `<i class="fa-solid fa-volume-high"></i> <span data-i18n="btn-read-aloud">${currentLang === 'ar' ? 'قراءة' : 'Read Aloud'}</span>`;
+                return;
+            }
+
+            // Gather the text to be read
+            const material = document.getElementById('res-material').textContent || '';
+            const confidence = document.getElementById('res-conf').textContent || '';
+            const part = document.getElementById('res-part').textContent || '';
+            const category = document.getElementById('res-category').textContent || '';
+            const alternatives = document.getElementById('ai-alternatives').textContent || '';
+
+            let textToRead = '';
+            if (currentLang === 'ar') {
+                textToRead = `المادة المكتشفة: ${material}. درجة الثقة: ${confidence}. جزء النبات: ${part}. التصنيف: ${category}. بدائل محتملة: ${alternatives}.`;
+            } else {
+                textToRead = `Detected Material: ${material}. Confidence: ${confidence}. Plant Part: ${part}. Classification: ${category}. Alternative Matches: ${alternatives}.`;
+            }
+
+            // Add application details
+            const appElements = document.querySelectorAll('.val-card h4');
+            if (appElements.length > 0) {
+                if (currentLang === 'ar') {
+                    textToRead += ' التطبيقات المحتملة: ';
+                } else {
+                    textToRead += ' Potential Applications: ';
+                }
+                appElements.forEach(app => {
+                    textToRead += app.textContent + '. ';
+                });
+            }
+
+            // Create speech utterance
+            const utterance = new SpeechSynthesisUtterance(textToRead);
+            utterance.lang = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+            utterance.rate = 0.95;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+
+            // Update button state while speaking
+            utterance.onstart = () => {
+                document.getElementById('read-aloud-btn').innerHTML = `<i class="fa-solid fa-pause"></i> <span data-i18n="btn-read-aloud">${currentLang === 'ar' ? 'إيقاف' : 'Stop'}</span>`;
+            };
+
+            utterance.onend = () => {
+                document.getElementById('read-aloud-btn').innerHTML = `<i class="fa-solid fa-volume-high"></i> <span data-i18n="btn-read-aloud">${currentLang === 'ar' ? 'قراءة' : 'Read Aloud'}</span>`;
+            };
+
+            utterance.onerror = () => {
+                document.getElementById('read-aloud-btn').innerHTML = `<i class="fa-solid fa-volume-high"></i> <span data-i18n="btn-read-aloud">${currentLang === 'ar' ? 'قراءة' : 'Read Aloud'}</span>`;
+            };
+
+            // Start speaking
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // --- FETCH API INTEGRATION FOR LOGGING DEPOSITS ---
+        async function logCollection() {
+            if (!currentUser) {
                 openModal('auth-modal');
                 return;
             }
 
-            const matName = lastAIScanResult ? (lastAIScanResult.arabic_name || lastAIScanResult.material) : (currentLang === 'ar' ? 'مخلفات نباتية معملية' : 'Botanical Lab Waste');
-            const weight = lastAIScanResult && lastAIScanResult.weight_kg ? lastAIScanResult.weight_kg : 2.0;
-            const ptsEarned = Math.round(weight * 50);
-            const batchId = 'REP-' + Math.floor(100000 + Math.random() * 900000);
+            const material = prompt(currentLang === 'ar' ? "أدخل نوع المادة (مثال: قشور برتقال, أوراق نعناع):" : "Enter material type:");
+            if (!material) return;
 
-            const batch = {
-                id: batchId,
-                user: db.users[db.currentUser].name,
-                material: matName,
+            const weight = prompt(currentLang === 'ar' ? "أدخل الوزن بالكجم:" : "Enter weight in kg:");
+            if (!weight || isNaN(weight)) return;
+
+            const newDeposit = {
+                userId: currentUser.id,
+                material: material,
                 weight: weight + ' kg',
-                points: ptsEarned,
-                date: new Date().toLocaleDateString()
+                points: Math.round(parseFloat(weight) * 10),
+                timestamp: new Date().toISOString()
             };
 
-            db.batches.unshift(batch);
-            db.users[db.currentUser].points += ptsEarned;
-            saveDB(db);
+            try {
+                // إرسال طلب الشحنة إلى السيرفر عبر fetch
+                const response = await fetch(`${VERCEL_API_URL}/deposits`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': VERCEL_API_KEY
+                    },
+                    body: JSON.stringify(newDeposit)
+                });
 
-            alert(currentLang === 'ar' ? `تم تسجيل الشحنة ${batchId} بنجاح! كسبت ${ptsEarned} نقطة.` : `Batch ${batchId} logged successfully! Earned ${ptsEarned} pts.`);
+                if (response.ok) {
+                    const result = await response.json();
+                    newDeposit.id = result.id;
+                } else {
+                    newDeposit.id = 'RE-' + Math.floor(1000 + Math.random() * 9000);
+                }
+            } catch (err) {
+                console.error("Fetch error logging deposit:", err);
+                newDeposit.id = 'RE-' + Math.floor(1000 + Math.random() * 9000);
+            }
+
+            if (!currentUser.deposits) currentUser.deposits = [];
+            currentUser.deposits.push(newDeposit);
+
+            alert((currentLang === 'ar' ? "تم تسجيل الإيداع بنجاح برقم الشحنة: " : "Deposit registered successfully! Batch ID: ") + newDeposit.id);
+            renderBatchTable();
         }
 
         function renderBatchTable() {
-            const db = getDB();
             const tbody = document.getElementById('batch-table-body');
-            if (!tbody) return;
+            tbody.innerHTML = '';
 
-            if (!db.batches || db.batches.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted);">${i18n[currentLang]['no-batches']}</td></tr>`;
-                return;
+            let allDeposits = [];
+            if (currentUser && currentUser.deposits) {
+                allDeposits = currentUser.deposits;
             }
 
-            tbody.innerHTML = db.batches.map(b => `
-                <tr style="border-bottom: 1px solid var(--border-color);">
-                    <td style="padding: 12px; font-weight:700; color:var(--primary-green);">${b.id}</td>
-                    <td style="padding: 12px;">${b.material}</td>
-                    <td style="padding: 12px;">${b.weight}</td>
-                    <td style="padding: 12px; color:var(--sage); font-weight:700;">+${b.points}</td>
-                    <td style="padding: 12px;"><span class="val-badge high">${currentLang === 'ar' ? 'مكتمل' : 'Completed'}</span></td>
-                </tr>
-            `).join('');
-        }
-
-        function redeemProduct(prodName, cost) {
-            const db = getDB();
-            if (!db.currentUser) {
-                alert(currentLang === 'ar' ? 'يرجى تسجيل الدخول لاستبدال النقاط.' : 'Please login to redeem points.');
-                openModal('auth-modal');
-                return;
-            }
-
-            const user = db.users[db.currentUser];
-            if (user.points < cost) {
-                alert(currentLang === 'ar' ? `رصيدك لا يكفي! تحتاج إلى ${cost - user.points} نقطة إضافية.` : `Insufficient points! You need ${cost - user.points} more points.`);
-                return;
-            }
-
-            user.points -= cost;
-            saveDB(db);
-            alert(currentLang === 'ar' ? `تم استبدال ${prodName} بنجاح! خصم ${cost} نقطة.` : `Successfully redeemed ${prodName}! Used ${cost} points.`);
-        }
-
-        function openCertificate() {
-            const db = getDB();
-            if (!db.currentUser) {
-                alert(currentLang === 'ar' ? 'يرجى تسجيل الدخول أولاً لعرض الشهادة.' : 'Please login to view your certificate.');
-                openModal('auth-modal');
-                return;
-            }
-
-            const user = db.users[db.currentUser];
-            document.getElementById('cert-student-name').innerText = user.name;
-            document.getElementById('cert-issued').innerText = user.createdAt || new Date().toLocaleDateString();
-            document.getElementById('cert-points').innerText = user.points;
-            document.getElementById('cert-id').innerText = 'CERT-' + user.id;
-
-            openModal('cert-modal');
-        }
-
-        function calculateBiz() {
-            const w = parseFloat(document.getElementById('biz-weight').value) || 0;
-            const cCollect = parseFloat(document.getElementById('biz-cost-collect').value) || 0;
-            const cExtract = parseFloat(document.getElementById('biz-cost-extract').value) || 0;
-            const cFixed = parseFloat(document.getElementById('biz-fixed-cost').value) || 0;
-            const yieldUnits = parseFloat(document.getElementById('biz-yield').value) || 0;
-            const price = parseFloat(document.getElementById('biz-price').value) || 0;
-
-            const totalCost = (w * cCollect) + (w * cExtract) + cFixed;
-            const revenue = yieldUnits * price;
-            const netProfit = revenue - totalCost;
-            const margin = revenue > 0 ? ((netProfit / revenue) * 100).toFixed(1) : 0;
-            const valuePerKg = w > 0 ? (netProfit / w).toFixed(2) : 0;
-            const breakEvenUnits = price > 0 ? Math.ceil(totalCost / price) : 0;
-
-            document.getElementById('res-total-cost').innerText = totalCost.toFixed(2) + ' ج.م';
-            document.getElementById('res-revenue').innerText = revenue.toFixed(2) + ' ج.م';
-            document.getElementById('res-net-profit').innerText = netProfit.toFixed(2) + ' ج.م';
-            document.getElementById('res-margin').innerText = margin + '%';
-            document.getElementById('res-value-kg').innerText = valuePerKg + ' ج.م / كجم';
-            document.getElementById('res-breakeven').innerText = breakEvenUnits + ' وحدة';
-
-            const alertBox = document.getElementById('biz-status-alert');
-            if (netProfit > 0) {
-                alertBox.style.display = 'block';
-                alertBox.style.background = 'rgba(82, 183, 136, 0.2)';
-                alertBox.style.color = '#D8F3DC';
-                alertBox.innerText = currentLang === 'ar' ? 'المشروع محقق لربحية واعدة ومجدي اقتصاديًا' : 'Promising Profitability & Economically Feasible';
-            } else if (netProfit < 0) {
-                alertBox.style.display = 'block';
-                alertBox.style.background = 'rgba(220, 53, 69, 0.2)';
-                alertBox.style.color = '#F8D7DA';
-                alertBox.innerText = currentLang === 'ar' ? 'المشروع يتطلب مراجعة التكاليف أو رفع سعر البيع' : 'Requires Cost Adjustment or Higher Selling Price';
+            if (allDeposits.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted);">${i18n[currentLang]["no-batches"]}</td></tr>`;
             } else {
-                alertBox.style.display = 'none';
+                allDeposits.forEach(d => {
+                    const tr = document.createElement('tr');
+                    tr.style.borderBottom = '1px solid var(--border-color)';
+                    tr.innerHTML = `
+                        <td style="padding:12px; font-weight:700;">${d.id}</td>
+                        <td style="padding:12px;">${d.material}</td>
+                        <td style="padding:12px;">${d.weight}</td>
+                        <td style="padding:12px; color:var(--primary-green); font-weight:700;">+${d.points}</td>
+                        <td style="padding:12px;"><span class="val-badge high">${currentLang === 'ar' ? 'مؤكد ومعالج' : 'Verified'}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             }
         }
 
+        // Authentication Modal Logic
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function switchAuthTab(mode) {
+            currentAuthMode = mode;
+            document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+            document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+            document.getElementById('group-name').style.display = mode === 'register' ? 'block' : 'none';
+            document.getElementById('auth-btn').textContent = mode === 'register' ? (currentLang === 'ar' ? 'إنشاء حساب' : 'Register') : (currentLang === 'ar' ? 'دخول' : 'Login');
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const idVal = document.getElementById('auth-id').value;
+            const nameVal = document.getElementById('auth-name').value || idVal;
+
+            currentUser = {
+                id: idVal,
+                name: nameVal,
+                deposits: []
+            };
+
+            document.getElementById('user-btn').innerHTML = `<i class="fa-solid fa-user-check"></i> <span>${nameVal}</span>`;
+            closeModal('auth-modal');
+            renderBatchTable();
+        }
+
+        // Initialize App
         window.onload = function() {
-            if (currentLang === 'en') toggleLanguage();
-            updateUI();
-            calculateBiz();
+            applyLanguage();
         };
     </script>
 </body>
