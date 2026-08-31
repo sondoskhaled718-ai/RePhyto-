@@ -1330,6 +1330,8 @@
     <script>
         const STORAGE_KEY = 'rephyto_system_v5_egp';
         let currentLang = localStorage.getItem('rephyto_lang') || 'ar';
+        let selectedImageBase64 = null;
+        let lastAIScanResult = null;
 
         const i18n = {
             ar: {
@@ -1417,7 +1419,7 @@
                 "lab-card-3-desc": "تركيب المقشرات الطبيعية والصابون العلاجي والمستخلصات الجلدية.",
                 "lab-card-3-routes": "نماذج الصابون والمنتجات العشبية",
                 "rew-title": "حول مساهمتك إلى مكافآت حقيقية",
-                "rew-sub": "استبدل نقاط استدامة RePhyto بمنتجات واعدة تم تطويرها وااختبارها داخل معامل جامعة ميريت.",
+                "rew-sub": "استبدل نقاط استدامة RePhyto بمنتجات واعدة تم تطويرها واختبارها داخل معامل جامعة ميريت.",
                 "rew-user-label": "تسجيل الدخول الحالي:",
                 "rew-balance-label": "رصيد النقاط:",
                 "btn-view-cert": "عرض شهادة الاستدامة",
@@ -1628,37 +1630,48 @@
                 "lbl-pass": "Password",
                 "btn-cancel": "Cancel",
                 "reg-title": "Create New Account",
-                "reg-desc": "Register a student profile to start collecting waste and earning points.",
+                "reg-desc": "Create a new student profile to start logging deposits and earning points.",
                 "lbl-name": "Full Name",
                 "lbl-id-reg": "Student ID (9 digits)",
-                "err-id-format": "Student ID must consist of exactly 9 digits.",
+                "err-id-format": "Student ID must be exactly 9 digits.",
                 "lbl-create-pass": "Create Password",
                 "btn-create-acc": "Create Account",
                 "cert-uni": "Merit University",
                 "cert-header": "Certificate of Sustainability Excellence",
-                "cert-certifies": "This certifies that student:",
-                "cert-body": "Has actively participated with high distinction in collecting and valorizing pharmaceutical botanical waste, advancing the circular economy at Merit University.",
+                "cert-certifies": "RePhyto Project Management certifies that student:",
+                "cert-body": "Has actively participated with high efficiency in pharmaceutical & botanical waste collection and valorization, advancing circular economy sustainability.",
                 "cert-date-lbl": "Issue Date:",
-                "cert-pts-lbl": "Verified Points:",
+                "cert-pts-lbl": "Total Verified Points:",
                 "pts-unit": "pts",
-                "cert-code-lbl": "Digital ID:",
+                "cert-code-lbl": "Digital Code:",
                 "btn-close": "Close",
-                "btn-download-pdf": "Download PDF Certificate",
+                "btn-download-pdf": "Download Certificate PDF",
                 "unregistered": "Not Logged In"
             }
         };
 
+        function getDB() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (!data) {
+                const initData = { users: {}, currentUser: null, batches: [] };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(initData));
+                return initData;
+            }
+            return JSON.parse(data);
+        }
+
+        function saveDB(db) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+            updateUI();
+        }
+
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             localStorage.setItem('rephyto_lang', currentLang);
-            applyLanguage();
-        }
-
-        function applyLanguage() {
             document.documentElement.lang = currentLang;
             document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('lang-btn-text').innerText = currentLang === 'ar' ? 'English' : 'عربي';
-
+            document.getElementById('lang-btn-text').innerText = currentLang === 'ar' ? 'English' : 'العربية';
+            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (i18n[currentLang] && i18n[currentLang][key]) {
@@ -1667,441 +1680,330 @@
             });
 
             updateUI();
-            if (typeof calculateBiz === 'function') calculateBiz();
-            if (currentClassification) renderClassification(currentClassification);
+            calculateBiz();
         }
 
-        const WASTE_POINTS = {
-            'hibiscus flower waste': 15, 'tea leaf waste': 10, 'bay leaf waste': 10,
-            'curry leaf waste': 10, 'mint leaf waste': 10, 'citrus peel waste': 15,
-            'plant stem waste': 10, 'dry leaves': 5, 'plant root waste': 15,
-            'unknown laboratory waste': 0
-        };
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            
+            const targetSection = document.getElementById(pageId);
+            if (targetSection) targetSection.classList.add('active');
+            
+            const activeLink = document.querySelector(`.nav-link[onclick="switchPage('${pageId}')"]`);
+            if (activeLink) activeLink.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-        const ROUTES = {
-            'hibiscus flower waste': [
-                ['مستخلص الكركديه الفينولي', 'Phenolic Hibiscus Extract', 'إمكانية عالية', 'High Potential', 'غني بالأنثوسيانين والمركبات المضادة للأكسدة', 'Rich in anthocyanins & natural antioxidants'],
-                ['صبغة طبيعية للغزل والمستحضرات', 'Natural Dye for Textiles/Cosmetics', 'إمكانية عالية', 'High Potential', 'صبغات أنثوسيانين حمراء عالية الجودة', 'High-quality red anthocyanin pigments'],
-                ['صابون نباتي علاجـي', 'Therapeutic Botanical Soap', 'إمكانية متوسطة', 'Medium Potential', 'إضافة بعد التأكد من معايير النقاء', 'Added after verifying purity standards'],
-                ['سماد عضوي ومحسن تربة', 'Organic Fertilizer & Soil Conditioner', 'إمكانية متوسطة', 'Medium Potential', 'للمتبقيات غير الملوثة كيميائياً', 'For chemically uncontaminated residues']
-            ],
-            'tea leaf waste': [
-                ['مستخلص الفينولات والشاي', 'Tea Polyphenol Extract', 'إمكانية عالية', 'High Potential', 'كاتيكين ومضادات أكسدة للتركيبات', 'Catechins & antioxidants for formulations'],
-                ['مقشر طبيعي للبشرة', 'Natural Skin Scrub', 'إمكانية متوسطة', 'Medium Potential', 'مادة نباتية دقيقة صلبة بعد التجفيف', 'Fine botanical abrasive after drying'],
-                ['مغذيات عضوية للتربة', 'Organic Soil Nutrients', 'إمكانية متوسطة', 'Medium Potential', 'عند خلوها من المذيبات الضارة', 'When free from harmful solvents'],
-                ['كتلة حيوية جافة', 'Dry Biomass', 'إمكانية متوسطة', 'Medium Potential', 'مكونات سليلوزية عالية', 'High cellulosic content']
-            ],
-            'bay leaf waste': [
-                ['استخلاص الزيوت العطرية', 'Essential Oil Extraction', 'إمكانية عالية', 'High Potential', 'مركبات تطاير وفينولات هامة', 'Volatile compounds & key phenolics'],
-                ['صابون عشبـي معطر', 'Scented Herbal Soap', 'إمكانية متوسطة', 'Medium Potential', 'إضافة عطرية ومطهرة للمستحضرات', 'Aromatic & antiseptic additive'],
-                ['سماد ومحسن تربة', 'Fertilizer & Soil Conditioner', 'إمكانية متوسطة', 'Medium Potential', 'فقط للعينات المعملية النظيفة', 'Clean lab samples only'],
-                ['مادة حيوية مجففة', 'Dried Biomass Material', 'إمكانية متوسطة', 'Medium Potential', 'استخدامات الألياف العشبية', 'Herbal fiber applications']
-            ],
-            'curry leaf waste': [
-                ['مستخلص فينولي مضاد للأكسدة', 'Phenolic Antioxidant Extract', 'إمكانية عالية', 'High Potential', 'مكونات مضادة للأكسدة الصيدلانية', 'Pharma antioxidant ingredients'],
-                ['مستخلص صبغي طبيعي', 'Natural Color Extract', 'إمكانية متوسطة', 'Medium Potential', 'يتطلب اختبارات الاستقرار الضوئي', 'Requires photostability testing'],
-                ['صابون عُشبي', 'Herbal Soap', 'إمكانية متوسطة', 'Medium Potential', 'إضافة عشبية طبيعية', 'Natural botanical additive'],
-                ['مخصب عضوي للتربة', 'Organic Soil Fertilizer', 'إمكانية متوسطة', 'Medium Potential', 'فقط للمخلفات الخالية من الكواشف', 'Residues free of reagents only']
-            ],
-            'mint leaf waste': [
-                ['مستخلص النعناع الطبـي', 'Medicinal Mint Extract', 'إمكانية عالية', 'High Potential', 'مركبات فينولية وعطرية عالية القيمة', 'High-value phenolic & aromatic compounds'],
-                ['فصل الزيوت الطيارة', 'Essential Oil Separation', 'إمكانية عالية', 'High Potential', 'استخلاص المينثول والمكونات الطيارة', 'Menthol & volatile compound extraction'],
-                ['صابون طبيعي منقٍ', 'Purifying Natural Soap', 'إمكانية متوسطة', 'Medium Potential', 'معالج بالأعشاب الطبيعية', 'Treated with natural herbs'],
-                ['سماد ومحسن تربة', 'Fertilizer & Soil Conditioner', 'إمكانية متوسطة', 'Medium Potential', 'فقط للمواد غير الملوثة', 'Uncontaminated materials only']
-            ],
-            'citrus peel waste': [
-                ['استخلاص البكتين الطبيعي', 'Natural Pectin Extraction', 'إمكانية عالية', 'High Potential', 'بكتين عالي الجودة للصيدلانيات والأغذية', 'High-grade pectin for pharma & food'],
-                ['زيوت قشور الموالح الطيارة', 'Citrus Peel Essential Oils', 'إمكانية عالية', 'High Potential', 'ليمونين ومركبات عطرية طيارة', 'Limonene & volatile aroma compounds'],
-                ['مستخلصات الفلافونويد', 'Flavonoid Extracts', 'إمكانية متوسطة', 'Medium Potential', 'مركبات فلافونويد مضادة للأكسدة', 'Antioxidant flavonoid compounds'],
-                ['كتلة جافة للقشور', 'Dried Peel Biomass', 'إمكانية متوسطة', 'Medium Potential', 'استخدامات الممتصات العضوية', 'Organic adsorbent uses']
-            ],
-            'plant stem waste': [
-                ['ألياف وكتلة حيوية', 'Fiber & Biomass', 'إمكانية عالية', 'High Potential', 'سليلوز وألياف مجففة', 'Cellulose & dried fibers'],
-                ['سماد عضوي للتربة', 'Organic Soil Compost', 'إمكانية متوسطة', 'Medium Potential', 'بعد المعالجة والفرز المعملي', 'After sorting & processing'],
-                ['فحص المستخلصات الكيميائية', 'Chemical Extract Screening', 'إمكانية متوسطة', 'Medium Potential', 'يحتاج اختبارات حيوية أولية', 'Requires initial bioassays'],
-                ['مركبات حيوية صلبة', 'Solid Biocompounds', 'إمكانية متوسطة', 'Medium Potential', 'بعد المطحنة والدق الفائق', 'After fine milling']
-            ],
-            'dry leaves': [
-                ['سماد ومخصب عضوي', 'Organic Compost & Fertilizer', 'إمكانية عالية', 'High Potential', 'عند خلوها التام من المواد الكيميائية', 'When strictly chemical-free'],
-                ['كتلة سليلوزية جافة', 'Dry Cellulosic Biomass', 'إمكانية متوسطة', 'Medium Potential', 'استخدامات الورق الحيوي والألياف', 'Bio-paper & fiber uses'],
-                ['فحص الصبغات الخضراء', 'Green Pigment Screening', 'إمكانية متوسطة', 'Medium Potential', 'اختبارات الكلوروفيل والكلوروفيلين', 'Chlorophyll assays'],
-                ['مستخلصات عامة', 'General Botanical Extracts', 'إمكانية متوسطة', 'Medium Potential', 'يتطلب تحديد النوع النباتي', 'Requires plant identification']
-            ],
-            'plant root waste': [
-                ['استخلاص جذر المكونات الفعالة', 'Root Active Extract', 'إمكانية عالية', 'High Potential', 'تحليل فيتوكيميائي موجه للنبات', 'Targeted phytochemical analysis'],
-                ['كتلة حيوية للجذور', 'Root Biomass', 'إمكانية متوسطة', 'Medium Potential', 'ألياف مركبة ومواد امتصاص', 'Composite fibers & adsorbents'],
-                ['سماد ومحسن تربة', 'Soil Conditioner & Fertilizer', 'إمكانية متوسطة', 'Medium Potential', 'فقط للعينات الخالية من المواد السامة', 'Toxic-free samples only'],
-                ['بنك العينات البحثية', 'Research Sample Repository', 'إمكانية متوسطة', 'Medium Potential', 'التوثيق والتتبع الدوائي', 'Pharma tracking & documentation']
-            ],
-            'unknown laboratory waste': [
-                ['حجر ومراجعة معملية دقيقة', 'Quarantine & Lab Inspection', 'إمكانية عالية', 'High Potential', 'يمنع التثمين حتى التأكد من السلامة وتحديد النوع', 'No valorization until safety & species confirmed'],
-                ['فحص الهوية بالمعمل', 'Lab Identity Testing', 'إمكانية عالية', 'High Potential', 'مراجعة الفحوص الكيميائية والفيزيائية', 'Physicochemical testing'],
-                ['توقف المسار الآلي', 'Automated Pathway Hold', 'إمكانية متوسطة', 'Medium Potential', 'يتطلب تقرير سلامة معملي', 'Requires official lab safety report'],
-                ['تسجيل السجل فقط', 'Record Log Only', 'إمكانية متوسطة', 'Medium Potential', 'حفظ بيانات المصدر دون معالجة', 'Save source metadata without processing']
-            ]
-        };
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        let state = loadState();
-        let currentImage = null;
-        let currentClassification = null;
-        let isAIScanning = false;
-
-        function loadState(){
-            try { 
-                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-                return saved || defaultState(); 
-            } catch(e){ 
-                return defaultState(); 
+        function switchAuthTab(tab) {
+            if (tab === 'login') {
+                document.getElementById('tab-login').classList.add('active');
+                document.getElementById('tab-register').classList.remove('active');
+                document.getElementById('auth-login-view').style.display = 'block';
+                document.getElementById('auth-register-view').style.display = 'none';
+            } else {
+                document.getElementById('tab-register').classList.add('active');
+                document.getElementById('tab-login').classList.remove('active');
+                document.getElementById('auth-register-view').style.display = 'block';
+                document.getElementById('auth-login-view').style.display = 'none';
             }
         }
-        function defaultState(){ 
-            return { users: [], currentUser: null, scans: [] }; 
-        }
-        function saveState(){ 
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); 
-            updateUI(); 
-        }
-        function escapeHtml(v){ 
-            return String(v).replace(/[&<>'"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); 
-        }
 
-        window.switchAuthTab = function(tab){
-            document.getElementById('tab-login').classList.toggle('active', tab==='login');
-            document.getElementById('tab-register').classList.toggle('active', tab==='register');
-            document.getElementById('auth-login-view').style.display = (tab==='login' ? 'block' : 'none');
-            document.getElementById('auth-register-view').style.display = (tab==='register' ? 'block' : 'none');
-        };
-
-        window.handleRegister = function(){
+        function handleRegister() {
             const name = document.getElementById('reg-name-input').value.trim();
             const id = document.getElementById('reg-id-input').value.trim();
-            const pass = document.getElementById('reg-pass-input').value;
-            const err = document.getElementById('id-error');
-
-            if(!/^\d{9}$/.test(id)) {
-                err.style.display = 'block';
+            const pass = document.getElementById('reg-pass-input').value.trim();
+            
+            if (!/^\d{9}$/.test(id)) {
+                document.getElementById('id-error').style.display = 'block';
                 return;
             } else {
-                err.style.display = 'none';
+                document.getElementById('id-error').style.display = 'none';
             }
 
-            if(!name || pass.length < 4) {
-                alert(currentLang==='ar'?'الرجاء إدخال اسم صحيح وكلمة مرور 4 خانات على الأقل.':'Please enter a valid name and password of at least 4 characters.');
+            if (!name || pass.length < 4) {
+                alert(currentLang === 'ar' ? 'يرجى إدخال اسم كامل وكلمة مرور من 4 خانات على الأقل.' : 'Please enter full name and password with at least 4 characters.');
                 return;
             }
 
-            if(state.users.find(u => u.id === id)) {
-                alert(currentLang==='ar'?'هذا الرقم الجامعي مسجل بالفعل.':'This Student ID is already registered.');
+            const db = getDB();
+            if (db.users[id]) {
+                alert(currentLang === 'ar' ? 'هذا الرقم الجامعي مسجل بالفعل! قم بتسجيل الدخول.' : 'This Student ID is already registered! Please login.');
                 return;
             }
 
-            const newUser = { id, name, pass, points: 0, deposits: [] };
-            state.users.push(newUser);
-            state.currentUser = id;
-            saveState();
+            db.users[id] = { name: name, id: id, pass: pass, points: 0, createdAt: new Date().toLocaleDateString() };
+            db.currentUser = id;
+            saveDB(db);
+            
             closeModal('auth-modal');
-            alert(currentLang==='ar'?'تم إنشاء الحساب بنجاح!':'Account created successfully!');
-        };
-
-        window.handleLogin = function(){
-            const id = document.getElementById('login-id-input').value.trim();
-            const pass = document.getElementById('login-pass-input').value;
-
-            const user = state.users.find(u => u.id === id && u.pass === pass);
-            if(user) {
-                state.currentUser = id;
-                saveState();
-                closeModal('auth-modal');
-            } else {
-                alert(currentLang==='ar'?'بيانات الدخول غير صحيحة.':'Invalid login credentials.');
-            }
-        };
-
-        window.openModal = function(id) { document.getElementById(id).style.display = 'flex'; };
-        window.closeModal = function(id) { document.getElementById(id).style.display = 'none'; };
-
-        window.switchPage = function(pageId) {
-            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            const target = document.getElementById(pageId);
-            if(target) target.classList.add('active');
-            const activeLink = document.querySelector(`.nav-link[onclick*="'${pageId}'"]`);
-            if(activeLink) activeLink.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        function triggerFileInput() {
-            document.getElementById('file-input').click();
+            alert(currentLang === 'ar' ? `مرحباً بك د/ ${name}! تم إنشاء الحساب بنجاح.` : `Welcome Dr. ${name}! Account created successfully.`);
         }
 
+        function handleLogin() {
+            const id = document.getElementById('login-id-input').value.trim();
+            const pass = document.getElementById('login-pass-input').value.trim();
+
+            const db = getDB();
+            if (db.users[id] && db.users[id].pass === pass) {
+                db.currentUser = id;
+                saveDB(db);
+                closeModal('auth-modal');
+                alert(currentLang === 'ar' ? `أهلاً بعودتك د/ ${db.users[id].name}` : `Welcome back Dr. ${db.users[id].name}`);
+            } else {
+                alert(currentLang === 'ar' ? 'الرقم الجامعي أو كلمة المرور غير صحيحة.' : 'Invalid Student ID or Password.');
+            }
+        }
+
+        function updateUI() {
+            const db = getDB();
+            const userBtnText = document.querySelector('#user-btn span');
+            const loggedLabel = document.getElementById('logged-user-label');
+            const ptsDisplay = document.getElementById('user-points-display');
+
+            if (db.currentUser && db.users[db.currentUser]) {
+                const u = db.users[db.currentUser];
+                if (userBtnText) userBtnText.innerText = u.name.split(' ')[0];
+                if (loggedLabel) loggedLabel.innerText = u.name + ` (${u.id})`;
+                if (ptsDisplay) ptsDisplay.innerText = u.points + (currentLang === 'ar' ? ' نقطة' : ' pts');
+            } else {
+                if (userBtnText) userBtnText.innerText = i18n[currentLang]['btn-student-login'];
+                if (loggedLabel) loggedLabel.innerText = i18n[currentLang]['unregistered'];
+                if (ptsDisplay) ptsDisplay.innerText = '0' + (currentLang === 'ar' ? ' نقطة' : ' pts');
+            }
+
+            renderBatchTable();
+        }
+
+        function triggerFileInput() { document.getElementById('file-input').click(); }
+
         function handleFile(files) {
-            if(!files || !files[0]) return;
+            if (!files || files.length === 0) return;
             const file = files[0];
             const reader = new FileReader();
             reader.onload = function(e) {
-                currentImage = e.target.result;
                 const img = document.getElementById('preview-img');
-                img.src = currentImage;
+                img.src = e.target.result;
                 img.style.display = 'block';
                 document.getElementById('scan-box').style.display = 'block';
+                selectedImageBase64 = e.target.result.split(',')[1];
             };
             reader.readAsDataURL(file);
         }
 
-        // ==================== FIX AND IMPROVED COLOR ANALYSIS ====================
-        function classifyImageCanvas(imgElement) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 100;
-            canvas.height = 100;
-            ctx.drawImage(imgElement, 0, 0, 100, 100);
-
-            const imgData = ctx.getImageData(0, 0, 100, 100).data;
-            let rTotal = 0, gTotal = 0, bTotal = 0, count = 0;
-            let redHueCount = 0, greenHueCount = 0, yellowOrangeCount = 0, brownCount = 0;
-
-            for (let i = 0; i < imgData.length; i += 4) {
-                const r = imgData[i];
-                const g = imgData[i + 1];
-                const b = imgData[i + 2];
-
-                rTotal += r; gTotal += g; bTotal += b;
-                count++;
-
-                // Relaxed and comprehensive botanical color spectrum detectors
-                if (r > g * 1.15 && r > b * 1.15) {
-                    redHueCount++;
-                } else if (g > r * 0.95 && g > b * 0.95) {
-                    greenHueCount++;
-                } else if (r > b * 1.2 && g > b * 1.1) {
-                    yellowOrangeCount++;
-                } else if (r > 60 && g > 40 && b < 60 && Math.abs(r - g) < 50) {
-                    brownCount++;
-                }
-            }
-
-            const avgR = rTotal / count;
-            const avgG = gTotal / count;
-            const avgB = bTotal / count;
-
-            // Accurate botanical classification without overly restrictive human-skin safeguards
-            if (redHueCount > count * 0.15 || (avgR > avgG * 1.2 && avgR > avgB * 1.2)) {
-                return {
-                    material: 'hibiscus flower waste',
-                    part: currentLang === 'ar' ? 'الزهور والبتلات' : 'Flowers & Petals',
-                    conf: '94%',
-                    alts: currentLang === 'ar' ? 'قشور الرمان، ثمار الورد' : 'Pomegranate peel, Rosehips'
-                };
-            } else if (yellowOrangeCount > count * 0.20 || (avgR > avgB * 1.3 && avgG > avgB * 1.1)) {
-                return {
-                    material: 'citrus peel waste',
-                    part: currentLang === 'ar' ? 'قشور الثمار' : 'Fruit Peels',
-                    conf: '91%',
-                    alts: currentLang === 'ar' ? 'قشور الكينكون، مخلفات الترنج' : 'Kumquat peels, Citron waste'
-                };
-            } else if (greenHueCount > count * 0.18 || (avgG > avgR && avgG > avgB)) {
-                if (avgG > 100) {
-                    return {
-                        material: 'mint leaf waste',
-                        part: currentLang === 'ar' ? 'الأوراق الطازجة' : 'Fresh Leaves',
-                        conf: '93%',
-                        alts: currentLang === 'ar' ? 'أوراق الريحان، أوراق البردقوش' : 'Basil leaves, Marjoram leaves'
-                    };
-                } else {
-                    return {
-                        material: 'tea leaf waste',
-                        part: currentLang === 'ar' ? 'الأوراق والمعالجات' : 'Processed Leaves',
-                        conf: '89%',
-                        alts: currentLang === 'ar' ? 'أوراق الشاي الأخضر، أوراق المريمية' : 'Green tea leaves, Sage leaves'
-                    };
-                }
-            } else if (brownCount > count * 0.20 || (avgR > avgB && avgG > avgB && avgR < 120)) {
-                return {
-                    material: 'dry leaves',
-                    part: currentLang === 'ar' ? 'الأوراق المجففة' : 'Dried Leaves',
-                    conf: '88%',
-                    alts: currentLang === 'ar' ? 'مخلفات السيقان العشبية' : 'Herbal stem waste'
-                };
-            } else {
-                return {
-                    material: 'plant stem waste',
-                    part: currentLang === 'ar' ? 'السيقان والأنسجة الخشبية' : 'Stems & Fibers',
-                    conf: '85%',
-                    alts: currentLang === 'ar' ? 'ألياف الجذور، بقايا الترشيح' : 'Root fibers, Filter residues'
-                };
-            }
-        }
-
-        function processAIScan() {
-            const img = document.getElementById('preview-img');
-            if (!currentImage || img.style.display === 'none') {
-                alert(currentLang === 'ar' ? 'الرجاء تحميل صورة العينة أولاً.' : 'Please upload a sample image first.');
+        async function processAIScan() {
+            if (!selectedImageBase64) {
+                alert(currentLang === 'ar' ? 'يرجى اختيار صورة أولاً' : 'Please select an image first.');
                 return;
             }
 
-            if (isAIScanning) return;
-            isAIScanning = true;
-
-            const scanBox = document.getElementById('scan-box');
-            scanBox.style.display = 'block';
-
-            setTimeout(() => {
-                const result = classifyImageCanvas(img);
-                currentClassification = result;
-                renderClassification(result);
-
-                document.getElementById('results-placeholder').style.display = 'none';
-                document.getElementById('results-panel').classList.add('active');
-                isAIScanning = false;
-            }, 1200);
-        }
-
-        function renderClassification(res) {
-            const matName = res.material;
-            const displayMat = currentLang === 'ar' ? getArabicMatName(matName) : matName.toUpperCase();
+            const placeholder = document.getElementById('results-placeholder');
+            const panel = document.getElementById('results-panel');
+            const scanLine = document.querySelector('.scan-line');
             
-            document.getElementById('res-material').innerText = displayMat;
-            document.getElementById('res-conf').innerText = res.conf;
-            document.getElementById('res-part').innerText = res.part;
-            document.getElementById('ai-alternatives').innerText = res.alts;
+            placeholder.style.display = 'none';
+            panel.classList.remove('active');
+            if (scanLine) scanLine.style.display = 'block';
 
-            // Render Valorization Grid
-            const grid = document.getElementById('valorization-grid');
-            grid.innerHTML = '';
-            const routes = ROUTES[matName] || ROUTES['unknown laboratory waste'];
+            const apiKey = "YOUR_API_KEY"; 
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
-            routes.forEach((r, idx) => {
-                const title = currentLang === 'ar' ? r[0] : r[1];
-                const badgeText = currentLang === 'ar' ? r[2] : r[3];
-                const desc = currentLang === 'ar' ? r[4] : r[5];
-                const isHigh = badgeText.includes('عالية') || badgeText.includes('High');
+            const promptText = `
+Analyze this image of medicinal plant waste / botanical waste for a university pharmacy circular economy application.
+Return ONLY a raw, valid JSON object with NO markdown, NO code block markers, using this schema:
+{
+  "material": "English Plant/Waste Name",
+  "arabic_name": "الاسم بالعربية",
+  "part": "Plant part (e.g. Peels, Leaves, Stems)",
+  "part_ar": "جزء النبات (مثل القشور، الأوراق)",
+  "confidence": "High / Medium",
+  "weight_kg": 2.5,
+  "bio_compounds": ["Compound1", "Compound2"],
+  "applications": [
+    {"title": "Application Title", "desc": "Short description", "value_egp": 150}
+  ],
+  "pathway": [
+    "Step 1: Description",
+    "Step 2: Description",
+    "Step 3: Description"
+  ],
+  "alternatives": "Alternative materials if applicable",
+  "estimated_value_egp": 350
+}
+Set language according to context, provide realistic pharmacognosy extraction data.
+            `;
 
-                const card = document.createElement('div');
-                card.className = `val-card ${idx === 0 ? 'selected' : ''}`;
-                card.onclick = () => {
-                    document.querySelectorAll('.val-card').forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
-                };
-                card.innerHTML = `
-                    <span class="val-badge ${isHigh ? 'high' : 'medium'}">${badgeText}</span>
-                    <h5 style="color: var(--primary-dark); font-size: 0.95rem;">${title}</h5>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">${desc}</p>
-                `;
-                grid.appendChild(card);
-            });
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [
+                                { text: promptText },
+                                {
+                                    inline_data: {
+                                        mime_type: 'image/jpeg',
+                                        data: selectedImageBase64
+                                    }
+                                }
+                            ]
+                        }]
+                    })
+                });
 
-            // Render Pathway Steps
-            const pathway = document.getElementById('pathway');
-            pathway.innerHTML = '';
-            const steps = currentLang === 'ar' ? [
-                '1. الفحص الفيتوكيميائي الأولي والاختبار النسيجي.',
-                '2. التجفيف المعملي في درجة حرارة محكومة (40°C).',
-                '3. الاستخلاص المذيب أو الفصل الفائق بالموجات فوق الصوتية.',
-                '4. التنقية والتركيز للحصول على المنتج النهائي المعتمد.'
-            ] : [
-                '1. Initial phytochemical screening & tissue testing.',
-                '2. Controlled lab drying at (40°C).',
-                '3. Solvent extraction or ultrasound-assisted separation.',
-                '4. Purification & concentration for certified yields.'
-            ];
+                const data = await response.json();
+                if (scanLine) scanLine.style.display = 'none';
 
-            steps.forEach((s, i) => {
-                const stepEl = document.createElement('div');
-                stepEl.className = 'pathway-step';
-                stepEl.innerHTML = `
-                    <div class="step-num">${i + 1}</div>
-                    <div style="font-size:0.88rem; color: var(--text-dark);">${s}</div>
-                `;
-                pathway.appendChild(stepEl);
-            });
-        }
+                let rawText = data.candidates[0].content.parts[0].text.trim();
+                rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                const result = JSON.parse(rawText);
 
-        function getArabicMatName(eng) {
-            const map = {
-                'hibiscus flower waste': 'مخلفات زهور الكركديه',
-                'tea leaf waste': 'مخلفات أوراق الشاي',
-                'bay leaf waste': 'مخلفات أوراق الغار',
-                'curry leaf waste': 'مخلفات أوراق الكاري',
-                'mint leaf waste': 'مخلفات أوراق النعناع',
-                'citrus peel waste': 'مخلفات قشور الموالح',
-                'plant stem waste': 'مخلفات السيقان والألياف النباتية',
-                'dry leaves': 'مخلفات الأوراق المجففة',
-                'plant root waste': 'مخلفات الجذور الجافة',
-                'unknown laboratory waste': 'عينة غير معروفة / محظورة'
-            };
-            return map[eng] || eng;
+                lastAIScanResult = result;
+
+                document.getElementById('res-material').innerText = currentLang === 'ar' ? (result.arabic_name || result.material) : result.material;
+                document.getElementById('res-conf').innerText = result.confidence || '95%';
+                document.getElementById('res-part').innerText = currentLang === 'ar' ? (result.part_ar || result.part) : result.part;
+                document.getElementById('res-category').innerText = result.bio_compounds ? result.bio_compounds.join(', ') : 'Botanical Waste';
+
+                const valGrid = document.getElementById('valorization-grid');
+                valGrid.innerHTML = '';
+                if (result.applications) {
+                    result.applications.forEach(app => {
+                        valGrid.innerHTML += `
+                            <div class="val-card">
+                                <span class="val-badge high">${app.value_egp || 100} EGP</span>
+                                <h5>${app.title}</h5>
+                                <p style="font-size:0.75rem; color:var(--text-muted);">${app.desc}</p>
+                            </div>
+                        `;
+                    });
+                }
+
+                const pathwayContainer = document.getElementById('pathway');
+                pathwayContainer.innerHTML = '';
+                if (result.pathway) {
+                    result.pathway.forEach((step, idx) => {
+                        pathwayContainer.innerHTML += `
+                            <div class="pathway-step">
+                                <div class="step-num">${idx + 1}</div>
+                                <div style="font-size:0.85rem; color:var(--text-dark);">${step}</div>
+                            </div>
+                        `;
+                    });
+                }
+
+                document.getElementById('ai-alternatives').innerText = result.alternatives || '—';
+
+                panel.classList.add('active');
+
+                if (result.weight_kg) {
+                    document.getElementById('biz-weight').value = result.weight_kg;
+                    calculateBiz();
+                }
+
+            } catch (err) {
+                console.error("Gemini API Error:", err);
+                if (scanLine) scanLine.style.display = 'none';
+                alert(currentLang === 'ar' ? 'حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. يرجى التحقق من المفتاح أو الاتصال بالإنترنت.' : 'Error connecting to Gemini API. Check API key or internet connection.');
+                placeholder.style.display = 'block';
+            }
         }
 
         function resetScanner() {
-            currentImage = null;
-            currentClassification = null;
-            document.getElementById('file-input').value = '';
+            selectedImageBase64 = null;
+            lastAIScanResult = null;
             document.getElementById('preview-img').style.display = 'none';
             document.getElementById('scan-box').style.display = 'none';
             document.getElementById('results-panel').classList.remove('active');
             document.getElementById('results-placeholder').style.display = 'block';
+            document.getElementById('file-input').value = '';
         }
 
         function logCollection() {
-            if (!state.currentUser) {
+            const db = getDB();
+            if (!db.currentUser) {
+                alert(currentLang === 'ar' ? 'يرجى تسجيل الدخول أولاً لتسجيل الإيداع.' : 'Please login first to log a deposit.');
                 openModal('auth-modal');
-                alert(currentLang === 'ar' ? 'الرجاء تسجيل الدخول أولاً لتسجيل الإيداع.' : 'Please login first to log a deposit.');
                 return;
             }
 
-            const user = state.users.find(u => u.id === state.currentUser);
-            if (!user) return;
+            const matName = lastAIScanResult ? (lastAIScanResult.arabic_name || lastAIScanResult.material) : (currentLang === 'ar' ? 'مخلفات نباتية معملية' : 'Botanical Lab Waste');
+            const weight = lastAIScanResult && lastAIScanResult.weight_kg ? lastAIScanResult.weight_kg : 2.0;
+            const ptsEarned = Math.round(weight * 50);
+            const batchId = 'REP-' + Math.floor(100000 + Math.random() * 900000);
 
-            const mat = currentClassification ? currentClassification.material : 'hibiscus flower waste';
-            const pts = WASTE_POINTS[mat] || 10;
-            const batchId = 'RP-' + Math.floor(100000 + Math.random() * 900000);
-
-            const deposit = {
+            const batch = {
                 id: batchId,
-                material: mat,
-                weight: '1.5 kg',
-                points: pts,
+                user: db.users[db.currentUser].name,
+                material: matName,
+                weight: weight + ' kg',
+                points: ptsEarned,
                 date: new Date().toLocaleDateString()
             };
 
-            user.points += pts;
-            user.deposits = user.deposits || [];
-            user.deposits.unshift(deposit);
+            db.batches.unshift(batch);
+            db.users[db.currentUser].points += ptsEarned;
+            saveDB(db);
 
-            saveState();
-            alert(currentLang === 'ar' ? `تم تسجيل الإيداع بنجاح! الرصيد المكتسب: ${pts} نقطة. رمز الشحنة: ${batchId}` : `Deposit logged successfully! Points earned: ${pts}. Batch ID: ${batchId}`);
+            alert(currentLang === 'ar' ? `تم تسجيل الشحنة ${batchId} بنجاح! كسبت ${ptsEarned} نقطة.` : `Batch ${batchId} logged successfully! Earned ${ptsEarned} pts.`);
+        }
+
+        function renderBatchTable() {
+            const db = getDB();
+            const tbody = document.getElementById('batch-table-body');
+            if (!tbody) return;
+
+            if (!db.batches || db.batches.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted);">${i18n[currentLang]['no-batches']}</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = db.batches.map(b => `
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 12px; font-weight:700; color:var(--primary-green);">${b.id}</td>
+                    <td style="padding: 12px;">${b.material}</td>
+                    <td style="padding: 12px;">${b.weight}</td>
+                    <td style="padding: 12px; color:var(--sage); font-weight:700;">+${b.points}</td>
+                    <td style="padding: 12px;"><span class="val-badge high">${currentLang === 'ar' ? 'مكتمل' : 'Completed'}</span></td>
+                </tr>
+            `).join('');
         }
 
         function redeemProduct(prodName, cost) {
-            if (!state.currentUser) {
+            const db = getDB();
+            if (!db.currentUser) {
+                alert(currentLang === 'ar' ? 'يرجى تسجيل الدخول لاستبدال النقاط.' : 'Please login to redeem points.');
                 openModal('auth-modal');
                 return;
             }
 
-            const user = state.users.find(u => u.id === state.currentUser);
-            if (!user) return;
-
+            const user = db.users[db.currentUser];
             if (user.points < cost) {
-                alert(currentLang === 'ar' ? `رصيدك غير كافٍ. تحتاج إلى ${cost} نقطة.` : `Insufficient points. You need ${cost} points.`);
+                alert(currentLang === 'ar' ? `رصيدك لا يكفي! تحتاج إلى ${cost - user.points} نقطة إضافية.` : `Insufficient points! You need ${cost - user.points} more points.`);
                 return;
             }
 
             user.points -= cost;
-            saveState();
-            alert(currentLang === 'ar' ? `تم استبدال ${prodName} بنجاح! تم خصم ${cost} نقطة.` : `Successfully redeemed ${prodName}! Deducted ${cost} points.`);
+            saveDB(db);
+            alert(currentLang === 'ar' ? `تم استبدال ${prodName} بنجاح! خصم ${cost} نقطة.` : `Successfully redeemed ${prodName}! Used ${cost} points.`);
         }
 
         function openCertificate() {
-            if (!state.currentUser) {
+            const db = getDB();
+            if (!db.currentUser) {
+                alert(currentLang === 'ar' ? 'يرجى تسجيل الدخول أولاً لعرض الشهادة.' : 'Please login to view your certificate.');
                 openModal('auth-modal');
                 return;
             }
 
-            const user = state.users.find(u => u.id === state.currentUser);
-            if (!user) return;
-
+            const user = db.users[db.currentUser];
             document.getElementById('cert-student-name').innerText = user.name;
-            document.getElementById('cert-issued').innerText = new Date().toLocaleDateString();
+            document.getElementById('cert-issued').innerText = user.createdAt || new Date().toLocaleDateString();
             document.getElementById('cert-points').innerText = user.points;
             document.getElementById('cert-id').innerText = 'CERT-' + user.id;
 
@@ -2109,89 +2011,46 @@
         }
 
         function calculateBiz() {
-            const weight = parseFloat(document.getElementById('biz-weight').value) || 0;
-            const costCollect = parseFloat(document.getElementById('biz-cost-collect').value) || 0;
-            const costExtract = parseFloat(document.getElementById('biz-cost-extract').value) || 0;
-            const fixedCost = parseFloat(document.getElementById('biz-fixed-cost').value) || 0;
+            const w = parseFloat(document.getElementById('biz-weight').value) || 0;
+            const cCollect = parseFloat(document.getElementById('biz-cost-collect').value) || 0;
+            const cExtract = parseFloat(document.getElementById('biz-cost-extract').value) || 0;
+            const cFixed = parseFloat(document.getElementById('biz-fixed-cost').value) || 0;
             const yieldUnits = parseFloat(document.getElementById('biz-yield').value) || 0;
             const price = parseFloat(document.getElementById('biz-price').value) || 0;
 
-            const totalCost = (weight * costCollect) + (weight * costExtract) + fixedCost;
+            const totalCost = (w * cCollect) + (w * cExtract) + cFixed;
             const revenue = yieldUnits * price;
             const netProfit = revenue - totalCost;
-            const margin = revenue > 0 ? ((netProfit / revenue) * 100).toFixed(1) : '0.0';
-            const valueKg = weight > 0 ? (netProfit / weight).toFixed(2) : '0.00';
-            const breakEven = price > 0 ? Math.ceil(totalCost / price) : 0;
+            const margin = revenue > 0 ? ((netProfit / revenue) * 100).toFixed(1) : 0;
+            const valuePerKg = w > 0 ? (netProfit / w).toFixed(2) : 0;
+            const breakEvenUnits = price > 0 ? Math.ceil(totalCost / price) : 0;
 
             document.getElementById('res-total-cost').innerText = totalCost.toFixed(2) + ' ج.م';
             document.getElementById('res-revenue').innerText = revenue.toFixed(2) + ' ج.م';
             document.getElementById('res-net-profit').innerText = netProfit.toFixed(2) + ' ج.م';
             document.getElementById('res-margin').innerText = margin + '%';
-            document.getElementById('res-value-kg').innerText = valueKg + ' ج.م / كجم';
-            document.getElementById('res-breakeven').innerText = breakEven + ' وحدة';
+            document.getElementById('res-value-kg').innerText = valuePerKg + ' ج.م / كجم';
+            document.getElementById('res-breakeven').innerText = breakEvenUnits + ' وحدة';
 
             const alertBox = document.getElementById('biz-status-alert');
             if (netProfit > 0) {
                 alertBox.style.display = 'block';
                 alertBox.style.background = 'rgba(82, 183, 136, 0.2)';
-                alertBox.style.color = '#52B788';
-                alertBox.innerText = currentLang === 'ar' ? 'مشروع ذو جدوى اقتصادية إيجابية ومربحة' : 'Project has positive economic viability';
+                alertBox.style.color = '#D8F3DC';
+                alertBox.innerText = currentLang === 'ar' ? 'المشروع محقق لربحية واعدة ومجدي اقتصاديًا' : 'Promising Profitability & Economically Feasible';
             } else if (netProfit < 0) {
                 alertBox.style.display = 'block';
                 alertBox.style.background = 'rgba(220, 53, 69, 0.2)';
-                alertBox.style.color = '#DC3545';
-                alertBox.innerText = currentLang === 'ar' ? 'التكاليف تتجاوز الإيرادات المتوقعة' : 'Costs exceed expected revenues';
+                alertBox.style.color = '#F8D7DA';
+                alertBox.innerText = currentLang === 'ar' ? 'المشروع يتطلب مراجعة التكاليف أو رفع سعر البيع' : 'Requires Cost Adjustment or Higher Selling Price';
             } else {
                 alertBox.style.display = 'none';
             }
         }
 
-        function updateUI() {
-            const currentUser = state.users.find(u => u.id === state.currentUser);
-            const userBtnText = document.querySelector('#user-btn span');
-            const loggedLabel = document.getElementById('logged-user-label');
-            const pointsDisplay = document.getElementById('user-points-display');
-
-            if (currentUser) {
-                if (userBtnText) userBtnText.innerText = currentUser.name;
-                if (loggedLabel) loggedLabel.innerText = currentUser.name + ` (${currentUser.id})`;
-                if (pointsDisplay) pointsDisplay.innerText = currentUser.points + (currentLang === 'ar' ? ' نقطة' : ' pts');
-            } else {
-                if (userBtnText) userBtnText.innerText = i18n[currentLang]["btn-student-login"];
-                if (loggedLabel) loggedLabel.innerText = i18n[currentLang]["unregistered"];
-                if (pointsDisplay) pointsDisplay.innerText = '0 ' + (currentLang === 'ar' ? 'نقطة' : 'pts');
-            }
-
-            // Render Batch Table
-            const tbody = document.getElementById('batch-table-body');
-            tbody.innerHTML = '';
-
-            let allDeposits = [];
-            if (currentUser) {
-                allDeposits = currentUser.deposits || [];
-            }
-
-            if (allDeposits.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted);">${i18n[currentLang]["no-batches"]}</td></tr>`;
-            } else {
-                allDeposits.forEach(d => {
-                    const tr = document.createElement('tr');
-                    tr.style.borderBottom = '1px solid var(--border-color)';
-                    tr.innerHTML = `
-                        <td style="padding:12px; font-weight:700;">${escapeHtml(d.id)}</td>
-                        <td style="padding:12px;">${escapeHtml(currentLang === 'ar' ? getArabicMatName(d.material) : d.material)}</td>
-                        <td style="padding:12px;">${escapeHtml(d.weight)}</td>
-                        <td style="padding:12px; color:var(--primary-green); font-weight:700;">+${d.points}</td>
-                        <td style="padding:12px;"><span class="val-badge high">${currentLang === 'ar' ? 'مؤكد ومعالج' : 'Verified'}</span></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-        }
-
-        // Initialize App
         window.onload = function() {
-            applyLanguage();
+            if (currentLang === 'en') toggleLanguage();
+            updateUI();
             calculateBiz();
         };
     </script>
